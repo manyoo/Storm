@@ -1,4 +1,5 @@
 require 'Storm/Base/model'
+require 'Storm/Base/sodserver'
 
 module Storm
   module Models
@@ -35,6 +36,53 @@ module Storm
           @status = h[:status]
           @total = h[:total]
           @type = h[:type]
+        end
+
+        # Returns data specific to one invoice. In addition to what is returned
+        # in the list method, additional details about the specific lineitems
+        # are included in this method.
+        def details
+          raise 'uniq_id is not set for the current object' unless self.uniq_id
+          data = Storm::Base::SODServer.remote_call '/Billing/Invoice/details',
+                                                    :id => self.uniq_id
+          self.from_hash data
+        end
+
+        # Returns a list of all the invoices for the logged in account.
+        # Invoices are created at your regular billing date, but are also
+        # created for one-off items like creating or cloning a server.
+        #
+        # @param num [Int] a positive integer for page number
+        # @param size [Int] a positive integer for page size
+        # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
+        #                :page_size, :page_total and :items (an array of
+        #                Invoice objects)
+        def self.list(num, size)
+          raise 'num and size must be positive' unless num > 0 and size > 0
+          data = Storm::Base::SODServer.remote_call '/Billing/Invoice/list',
+                                                    :page_num => num,
+                                                    :page_size => size
+          res = {}
+          res[:item_count] = data[:item_count]
+          res[:item_total] = data[:item_total]
+          res[:page_num] = data[:page_num]
+          res[:page_size] = data[:page_size]
+          res[:page_total] = data[:page_total]
+          res[:items] = data[:items].map do |i|
+            item = Invoice.new
+            item.from_hash i
+            item
+          end
+        end
+
+        # Returns a projection of what current account's next bill will look
+        # like at their next bill date.
+        # @return [Invoice] an Invoice object
+        def self.next
+          data = Storm::Base::SODServer.remote_call '/Billing/Invoice/next'
+          inv = Invoice.new
+          inv.from_hash data
+          inv
         end
       end
 
