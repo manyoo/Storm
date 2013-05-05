@@ -3,7 +3,7 @@ require 'Storm/Base/model'
 module Storm
   module Models
     module Billing
-      class Invoice < Model
+      class Invoice < Storm::Base::Model
         attr_accessor :account
         attr_accessor :bill_date
         attr_accessor :due
@@ -38,7 +38,7 @@ module Storm
         end
       end
 
-      class BillItem < Model
+      class BillItem < Storm::Base::Model
         attr_accessor :charged_amount
         attr_accessor :end_date
         attr_accessor :description
@@ -55,7 +55,7 @@ module Storm
         end
       end
 
-      class BillGroup < Model
+      class BillGroup < Storm::Base::Model
         attr_accessor :description
         attr_accessor :end_date
         attr_accessor :line_items
@@ -78,7 +78,7 @@ module Storm
         end
       end
 
-      class Payment < Model
+      class Payment < Storm::Base::Model
         attr_accessor :account
         attr_accessor :amount
         attr_accessor :paid_date
