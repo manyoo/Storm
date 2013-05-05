@@ -139,6 +139,23 @@ module Storm
           @paid_date = self.get_datetime h, :paid_date
           @type = h[:type]
         end
+
+        # Charges the credit card on file for the current account the given
+        # amount, and applies those new funds to the account.  Currently this
+        # method is only useful for credit card accounts.  A forbidden
+        # exception will be thrown if used with a check account.
+        #
+        # @param amount [Int] A positive monetary value
+        # @param card_code [String] The cvv code of a credit card, consisting of a
+        # number at least 3 digits and up to 4 digits in length]
+        # @return [Int] A positive monetary value
+        def self.make(amount, card_code='')
+          raise 'amount should be positive' unless amount > 0
+          data = Storm::Base::SODServer.remote_call '/Billing/Payment/make',
+                                                    :amount => amount,
+                                                    :card_code => card_code
+          data[:amount]
+        end
       end
     end
   end
