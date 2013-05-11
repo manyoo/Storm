@@ -108,7 +108,7 @@ module Storm
       # @param server [Server] a specific server
       # @param frequency [String] one of 'daily', 'weekly', 'monthly', 'yearly'
       # @param height [Int] image height
-      # @prarm width [Int] image width
+      # @param width [Int] image width
       # @param small [Bool] whether need small image
       # @return [Hash] a hash with keys: :content and :content_type
       def self.graph(server, frequency, height, width, small)

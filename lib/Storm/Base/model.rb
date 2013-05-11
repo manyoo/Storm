@@ -42,7 +42,7 @@ module Storm
       #
       # @param h [Hash] the hash data
       # @param name [Symbol] the name of the key
-      # @param &blk [Block] a block to run on each data in the array
+      # @param blk [Block] a block to run on each data in the array
       # @return [Array] an array of result objects
       def get_array(h, name, &blk)
         arr = h[name]

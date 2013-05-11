@@ -40,9 +40,9 @@ module Storm
       # @param size [Int] volume size
       # @param attach [String] a string identifier
       # @param cross_attach [Bool] if enabling cross_attach
-      # @Param zone [Int] zone id
+      # @param zone [Int] zone id
       # @return [Volume] a new volume object
-      def self.create(domain, size, attach, cross_attach, zoen)
+      def self.create(domain, size, attach, cross_attach, zone)
         param = {}
         param[:domain] = domain
         param[:size] = size
@@ -129,7 +129,7 @@ module Storm
       #
       # @param domain [String] domain name
       # @param cross_attach [Bool] if enabling croos_attach
-      def update(domain, croos_attach)
+      def update(domain, cross_attach)
         param = {}
         param[:uniq_id] = self.uniq_id
         param[:domain] = domain if domain
