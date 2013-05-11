@@ -85,16 +85,16 @@ module Storm
       # @param include_pools [Bool]
       # @param page_num [Int] page number
       # @param page_size [Int] page size
-      # @param zond_id [String] zone id
+      # @param zone [Zone] zone
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                IPNetwork objects)
-      def self.list_account_public(include_pools, page_num, page_size, zond_id)
+      def self.list_account_public(include_pools, page_num, page_size, zone)
         param = {}
         param[:include_pools] = include_pools ? 1 : 0
         param[:page_num] = page_num if page_num
         param[:page_size] = page_size if page_size
-        param[:zond_id] = zond_id if zond_id
+        param[:zone_id] = zone.uniq_id if zone
         data = Storm::Base::SODServer.remote_call \
                     '/Network/IP/listAccntPublic', param
         res = {}
