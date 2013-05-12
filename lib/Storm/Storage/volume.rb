@@ -98,20 +98,12 @@ module Storm
         param[:attached_to] = attached_to.uniq_id if attached_to
         param[:page_num] = page_num if page_num
         param[:page_size] = page_size if page_size
-        data = Storm::Base::SODServer.remote_call \
-                      '/Storage/Block/Volume/list', param
-        res = {}
-        res[:item_count] = data[:item_count]
-        res[:item_total] = data[:item_total]
-        res[:page_num] = data[:page_num]
-        res[:page_size] = data[:page_size]
-        res[:page_total] = data[:page_total]
-        res[:items] = data[:items].map do |i|
+        Storm::Base::SODServer.remote_list \
+                      '/Storage/Block/Volume/list', param do |i|
           vol = Volume.new
           vol.from_hash i
           vol
         end
-        res
       end
 
       # Resize a volume.  Volumes can currently only be resized larger

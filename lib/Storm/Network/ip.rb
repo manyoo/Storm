@@ -64,19 +64,11 @@ module Storm
         param[:alsowith] = alsowith if alsowith
         param[:page_num] = page_num if page_num
         param[:page_size] = page_size if page_size
-        data = Storm::Base::SODServer.remote_call '/Network/IP/list', param
-        res = {}
-        res[:item_count] = data[:item_count]
-        res[:item_total] = data[:item_total]
-        res[:page_num] = data[:page_num]
-        res[:page_size] = data[:page_size]
-        res[:page_total] = data[:page_total]
-        res[:items] = data[:items].map do |i|
+        Storm::Base::SODServer.remote_list '/Network/IP/list', param do |i|
           ipnet = IPNetwork.new
           ipnet.from_hash i
           ipnet
         end
-        res
       end
 
       # Gets a list of public network asssignments for all subaccounts for a
@@ -95,20 +87,12 @@ module Storm
         param[:page_num] = page_num if page_num
         param[:page_size] = page_size if page_size
         param[:zone_id] = zone.uniq_id if zone
-        data = Storm::Base::SODServer.remote_call \
-                    '/Network/IP/listAccntPublic', param
-        res = {}
-        res[:item_count] = data[:item_count]
-        res[:item_total] = data[:item_total]
-        res[:page_num] = data[:page_num]
-        res[:page_size] = data[:page_size]
-        res[:page_total] = data[:page_total]
-        res[:items] = data[:items].map do |i|
+        Storm::Base::SODServer.remote_list \
+                    '/Network/IP/listAccntPublic', param do |i|
           ipnet = IPNetwork.new
           ipnet.from_hash i
           ipnet
         end
-        res
       end
 
       # Gets a paginated list os all public IPs for a particular server
@@ -126,20 +110,12 @@ module Storm
         param[:alsowith] = alsowith if alsowith
         param[:page_num] = page_num if page_num
         param[:page_size] = page_size if page_size
-        data = Storm::Base::SODServer.remote_call '/Network/IP/listPublic',
-                                                  param
-        res = {}
-        res[:item_count] = data[:item_count]
-        res[:item_total] = data[:item_total]
-        res[:page_num] = data[:page_num]
-        res[:page_size] = data[:page_size]
-        res[:page_total] = data[:page_total]
-        res[:items] = data[:items].map do |i|
+        Storm::Base::SODServer.remote_list '/Network/IP/listPublic',
+                                           param do |i|
           ipnet = IPNetwork.new
           ipnet.from_hash i
           ipnet
         end
-        res
       end
 
       # Remove a specific IP from a server

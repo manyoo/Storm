@@ -58,16 +58,9 @@ module Storm
       #                Invoice objects)
       def self.list(num, size)
         raise 'num and size must be positive' unless num > 0 and size > 0
-        data = Storm::Base::SODServer.remote_call '/Billing/Invoice/list',
-                                                  :page_num => num,
-                                                  :page_size => size
-        res = {}
-        res[:item_count] = data[:item_count]
-        res[:item_total] = data[:item_total]
-        res[:page_num] = data[:page_num]
-        res[:page_size] = data[:page_size]
-        res[:page_total] = data[:page_total]
-        res[:items] = data[:items].map do |i|
+        Storm::Base::SODServer.remote_list '/Billing/Invoice/list',
+                                            :page_num => num,
+                                            :page_size => size do |i|
           item = Invoice.new
           item.from_hash i
           item

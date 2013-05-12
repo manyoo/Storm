@@ -170,20 +170,12 @@ module Storm
         param[:page_num] = page_num if page_num
         param[:page_size] = page_size if page_size
         param[:region] = region if region
-        data = Storm::Base::SODServer.remote_call \
-                    '/Network/LoadBalancer/list', param
-        res = {}
-        res[:item_count] = data[:item_count]
-        res[:item_total] = data[:item_total]
-        res[:page_num] = data[:page_num]
-        res[:page_size] = data[:page_size]
-        res[:page_total] = data[:page_total]
-        res[:items] = data[:items].map do |i|
+        Storm::Base::SODServer.remote_list \
+                    '/Network/LoadBalancer/list', param do |i|
           lb = LoadBalancer.new
           lb.from_hash i
           lb
         end
-        res
       end
 
       # Gets a list of all possible Loadbalancer Nodes on an account,

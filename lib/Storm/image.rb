@@ -68,19 +68,11 @@ module Storm
       param = {}
       param[:page_num] = page_num if page_num
       param[:page_size] = page_size if page_size
-      data = Storm::Base::SODServer.remote_call '/Storm/Image/list', param
-      res = {}
-      res[:item_count] = data[:item_count]
-      res[:item_total] = data[:item_total]
-      res[:page_num] = data[:page_num]
-      res[:page_size] = data[:page_size]
-      res[:page_total] = data[:page_total]
-      res[:items] = res[:items].map do |i|
+      Storm::Base::SODServer.remote_list '/Storm/Image/list', param do |i|
         img = Image.new
         img.from_hash i
         img
       end
-      res
     end
 
     # Re-images a server with the image requested

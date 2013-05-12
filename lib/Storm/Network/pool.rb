@@ -109,19 +109,11 @@ module Storm
         param[:alsowith] = alsowith if alsowith
         param[:page_num] = page_num if page_num
         param[:page_size] = page_size if page_size
-        data = Storm::Base::SODServer.remote_call '/Network/Pool/list', param
-        res = {}
-        res[:item_count] = data[:item_count]
-        res[:item_total] = data[:item_total]
-        res[:page_num] = data[:page_num]
-        res[:page_size] = data[:page_size]
-        res[:page_total] = data[:page_total]
-        res[:items] = data[:items].map do |i|
+        Storm::Base::SODServer.remote_list '/Network/Pool/list', param do |i|
           asgnm = Assignment.new
           asgnm.from_hash i
           asgnm
         end
-        res
       end
 
       # Update the IP Pool

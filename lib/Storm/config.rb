@@ -70,19 +70,11 @@ module Storm
       param[:category] = category
       param[:page_num] = page_num if page_num
       param[:page_size] = page_size if page_size
-      data = Storm::Base::SODServer.remote_call '/Storm/Config/list', param
-      res = {}
-      res[:items_count] = data[:items_count]
-      res[:items_total] = data[:items_total]
-      res[:page_num] = data[:page_num]
-      res[:page_size] = data[:page_size]
-      res[:page_total] = data[:page_total]
-      res[:items] = data[:items].map do |i|
+      Storm::Base::SODServer.remote_list '/Storm/Config/list', param do |i|
         conf = Config.new
         conf.from_hash i
         conf
       end
-      res
     end
   end
 end

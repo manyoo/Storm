@@ -66,19 +66,11 @@ module Storm
       param[:resolved] = resolved ? 1 : 0
       param[:system] = system if system
       param[:uniq_id] = server.uniq_id if server
-      data = Storm::Base::SODServer.remote_call '/Notifications/all', param
-      res = {}
-      res[:item_count] = data[:item_count]
-      res[:item_total] = data[:item_total]
-      res[:page_num] = data[:page_num]
-      res[:page_size] = data[:page_size]
-      res[:page_total] = data[:page_total]
-      res[:items] = data[:items].map do |i|
+      Storm::Base::SODServer.remote_list '/Notifications/all', param do |i|
         notification = Notification.new
         notification.from_hash i
         notification
       end
-      res
     end
 
     # Get a list of unresolved notifcations for an account or server
@@ -101,19 +93,11 @@ module Storm
       param[:resolved] = resolved ? 1 : 0
       param[:system] = system if system
       param[:uniq_id] = server.uniq_id if server
-      data = Storm::Base::SODServer.remote_call '/Notifications/current', param
-      res = {}
-      res[:item_count] = data[:item_count]
-      res[:item_total] = data[:item_total]
-      res[:page_num] = data[:page_num]
-      res[:page_size] = data[:page_size]
-      res[:page_total] = data[:page_total]
-      res[:items] = data[:items].map do |i|
+      Storm::Base::SODServer.remote_list '/Notifications/current', param do |i|
         notification = Notification.new
         notification.from_hash i
         notification
       end
-      res
     end
 
     # Gets information about a specific notification

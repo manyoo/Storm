@@ -131,19 +131,11 @@ module Storm
         param[:page_num] = page_num if page_num
         param[:page_size] = page_size if page_size
         param[:uniq_id] = self.uniq_id
-        data = Storm::Base::SODServer.remote_call '/Server/history', param
-        res = {}
-        res[:item_count] = data[:item_count]
-        res[:item_total] = data[:item_total]
-        res[:page_num] = data[:page_num]
-        res[:page_size] = data[:page_size]
-        res[:page_total] = data[:page_total]
-        res[:items] = data[:items].map do |i|
+        Storm::Base::SODServer.remote_list '/Server/history', param do |i|
           notification = Notification.new
           notification.from_hash i
           notification
         end
-        res
       end
 
       # Get a list of servers, services, and devices on your account
@@ -164,19 +156,11 @@ module Storm
         param[:page_num] = page_num if page_num
         param[:page_size] = page_size if page_size
         param[:type] = type
-        data = Storm::Base::SODServer.remote_call '/Server/list', param
-        res = {}
-        res[:item_count] = data[:item_count]
-        res[:item_total] = data[:item_total]
-        res[:page_num] = data[:page_num]
-        res[:page_size] = data[:page_size]
-        res[:page_total] = data[:page_total]
-        res[:items] = data[:items].map do |i|
+        Storm::Base::SODServer.remote_list '/Server/list', param do |i|
           server = Server.new
           server.from_hash i
           server
         end
-        res
       end
 
       # Reboot the server

@@ -123,19 +123,11 @@ module Storm
       param[:page_num] = page_num if page_num
       param[:page_size] = page_size if page_size
       param[:series] = series if series
-      data = Storm::Base::SODServer.remote_call '/Product/list', param
-      res = {}
-      res[:item_count] = data[:item_count]
-      res[:item_total] = data[:item_total]
-      res[:page_num] = data[:page_num]
-      res[:page_size] = data[:page_size]
-      res[:page_total] = data[:page_total]
-      res[:items] = data[:items].map do |i|
+      Storm::Base::SODServer.remote_list '/Product/list', param do |i|
         prd = Product.new
         prd.from_hash i
         prd
       end
-      res
     end
 
     # Get a total price for a product

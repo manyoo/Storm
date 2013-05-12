@@ -32,22 +32,14 @@ module Storm
       #                :page_size, :page_total and :items (an array of
       #                Cluster objects)
       def self.list(page_num, page_size)
-        data = Storm::Base::SODServer.remote_call \
+        Storm::Base::SODServer.remote_list \
                   '/Storage/Block/Cluster/list',
                   :page_num => page_num,
-                  :page_size => page_size
-        res = {}
-        res[:item_count] = data[:item_count]
-        res[:item_total] = data[:item_total]
-        res[:page_num] = data[:page_num]
-        res[:page_size] = data[:page_size]
-        res[:page_total] = data[:page_total]
-        res[:items] = data[:items].map do |i|
+                  :page_size => page_size do |i|
           cluster = Cluster.new
           cluster.from_hash i
           cluster
         end
-        res
       end
     end
   end
