@@ -15,7 +15,7 @@ module Storm
       def from_hash(h)
         super
         @attached_to = h[:attached_to]
-        @cross_attach = h[:cross_attach] == 0 ? false : true
+        @cross_attach = h[:cross_attach].to_i == 0 ? false : true
         @domain = h[:domain]
         @label = h[:label]
         @size = h[:size]

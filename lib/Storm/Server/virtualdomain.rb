@@ -38,7 +38,7 @@ module Storm
         param[:uniq_id] = server.uniq_id
         data = Storm::Base::SODServer.remote_call \
                   '/Server/VirtualDomain/create', param
-        data[:success] ? true : false
+        data[:success].to_i == 1 ? true : false
       end
 
       # Returns the number of free VIRs a given type of shared account receives
@@ -101,7 +101,7 @@ module Storm
         param[:uniq_id] = server.uniq_id
         data = Storm::Base::SODServer.remote_call \
                       '/Server/VirtualDomain/relink', param
-        data[:success] ? true : false
+        data[:success].to_i == 1 ? true : false
       end
     end
   end

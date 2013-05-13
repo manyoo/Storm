@@ -81,7 +81,7 @@ module Storm
       def self.is_attached(server)
         data = Storm::Base::SODServer.remote_call '/Network/Private/isAttached',
                                                   :uniq_id => server.uniq_id
-        data[:is_attached] == 0 ? false : true
+        data[:is_attached].to_i == 0 ? false : true
       end
     end
   end

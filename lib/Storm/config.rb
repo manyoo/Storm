@@ -26,12 +26,12 @@ module Storm
 
     def from_hash(h)
       super
-      @active = h[:active] == 0 ? false : true
+      @active = h[:active].to_i == 1 ? true : false
       @available = h[:available]
       @category = h[:category]
       @cpu_cores = h[:cpu_cores]
       @cpu_count = h[:cpu_count]
-      @cpu_hyperthreading = h[:cpu_hyperthreading] == 0 ? false : true
+      @cpu_hyperthreading = h[:cpu_hyperthreading].to_i == 1 ? true : false
       @cpu_model = h[:cpu_model]
       @cpu_speed = h[:cpu_speed]
       @description = h[:description]
@@ -39,8 +39,7 @@ module Storm
       @disk_count = h[:disk_count]
       @disk_total = h[:disk_total]
       @disk_type = h[:disk_type]
-      @featured = h[:featured] == 0 ? false : true
-      @memory = h[:memory]
+      @featured = h[:featured].to_i == 1 ? true : false
       @raid_level = h[:raid_level]
       @ram_available = h[:ram_available]
       @ram_total = h[:ram_total]

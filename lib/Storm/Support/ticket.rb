@@ -29,7 +29,7 @@ module Storm
         @subject = h[:subject]
         @ticket_id = h[:ticket_id]
         @time = self.get_datetime h, :time
-        @truncated = h[:truncated] == 0 ? false : truncated
+        @truncated = h[:truncated].to_i == 0 ? false : truncated
         @type = h[:type]
       end
     end
@@ -83,19 +83,19 @@ module Storm
       def from_hash(h)
         super
         @account = h[:accnt]
-        @authenticated = h[:authenticated] == 0 ? false : true
+        @authenticated = h[:authenticated].to_i == 0 ? false : true
         @brand = h[:brand]
         @body = h[:body]
         @close_date = self.get_datetime h, :closedate
         @domain = h[:domain]
         @email = h[:email]
-        @emergency = h[:emergency] == 0 ? false : true
+        @emergency = h[:emergency].to_i == 0 ? false : true
         @feedback = Feedback.new
         if h[:feedback]
           @feedback.from_hash h[:feedback]
         end
         @handler = h[:handler]
-        @haswarned = h[:haswarned] == 0 ? false : true
+        @haswarned = h[:haswarned].to_i == 0 ? false : true
         @lastresponse = self.get_datetime h, :lastresponse
         @opened = self.get_datetime h, :opened
         @secid = h[:secid]
@@ -124,7 +124,7 @@ module Storm
         param[:secid] = @secid
         data = Storm::Base::SODServer.remote_call \
                     '/Support/Ticket/addFeedback', param
-        data[:feedback] == 0 ? false : true
+        data[:feedback].to_i == 0 ? false : true
       end
 
       # Add customer feedback for a specific ticket transaction. The
@@ -165,7 +165,7 @@ module Storm
         param[:password] = password
         data = Storm::Base::SODServer.remote_call \
                     '/Support/Ticket/authenticate', param
-        data[:authenticated] == 0 ? false : true
+        data[:authenticated].to_i == 0 ? false : true
       end
 
       # Closes a ticket
@@ -175,7 +175,7 @@ module Storm
         data = Storm::Base::SODServer.remote_call \
                     '/Support/Ticket/close', :id => self.uniq_id,
                     :secid => @secid
-        data[:closed] == 0 ? false : true
+        data[:closed].to_i == 0 ? false : true
       end
 
       # Makes a new ticket in the given account
@@ -228,7 +228,7 @@ module Storm
         data = Storm::Base::SODServer.remote_call '/Support/Ticket/reopen',
                                                   :id => self.uniq_id,
                                                   :secid => @secid
-        data[:reopened] == 0 ? false : true
+        data[:reopened].to_i == 0 ? false : true
       end
 
       # Add a customer transaction to the ticket
@@ -248,7 +248,7 @@ module Storm
         param[:secid] = @secid
         data = Storm::Base::SODServer.remote_call '/Support/Ticket/reply',
                                                   param
-        data[:reply] == 0 ? false : true
+        data[:reply].to_i == 0 ? false : true
       end
 
       # Returns the list of valid ticket types

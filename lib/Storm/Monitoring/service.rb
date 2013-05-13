@@ -12,9 +12,9 @@ module Storm
       def from_hash(h)
         super
         @can_monitor = h[:can_monitor]
-        @enabled = h[:enabled] == 0 ? false : true
+        @enabled = h[:enabled].to_i == 1 ? true : false
         @services = h[:services]
-        @unmonitored = h[:unmonitored] == 0 ? false : true
+        @unmonitored = h[:unmonitored].to_i == 1 ? true : false
       end
 
       # Get the current monitoring settings for a server

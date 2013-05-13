@@ -39,7 +39,7 @@ module Storm
       @enddate = self.get_datetime h, :enddate
       @last_alert = h[:last_alert]
       @modifieddate = self.get_datetime h, :modifieddate
-      @resolved = h[:resolved] == 0 ? false : true
+      @resolved = h[:resolved].to_i == 0 ? false : true
       @severity = h[:severity]
       @startdate = self.get_datetime h, :startdate
       @system = h[:system]

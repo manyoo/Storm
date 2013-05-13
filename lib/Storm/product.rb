@@ -14,13 +14,13 @@ module Storm
 
     def from_hash(h)
       super
-      @automated = h[:automated] == 0 ? false : true
+      @automated = h[:automated].to_i == 0 ? false : true
       @display_order = h[:display_order]
       @display_text = h[:display_text]
       @key = h[:key]
       @option_key_id = h[:option_key_id]
-      @public = h[:public] == 0 ? false : true
-      @required = h[:required] == 0 ? false : true
+      @public = h[:public].to_i == 0 ? false : true
+      @required = h[:required].to_i == 0 ? false : true
       @values = h[:values]
     end
   end
@@ -36,7 +36,7 @@ module Storm
 
     def from_hash(h)
       super
-      @approved = h[:approved] == 0 ? false : true
+      @approved = h[:approved].to_i == 0 ? false : true
       @balance = h[:balance]
       @cc_charge = h[:cc_charge]
       @hour = h[:hour]

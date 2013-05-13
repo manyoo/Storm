@@ -33,7 +33,7 @@ module Storm
       def self.expire
         data = Storm::Base::SODServer.remote_call '/Account/Auth/expireToken'
         @@token = nil
-        data[:expired] == 0 ? false : true
+        data[:expired].to_i == 1 ? true : false
       end
 
       # Tokens can be kept alive by calling this method again before the token

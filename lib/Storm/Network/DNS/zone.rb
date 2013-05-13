@@ -46,7 +46,7 @@ module Storm
           @master = h[:master]
           @name = h[:name]
           @notified_serial = h[:notified_serial]
-          @region_support = h[:region_support] == 0 ? false : true
+          @region_support = h[:region_support].to_i == 1 ? true : false
           @registering = h[:registering]
           @type = h[:type]
         end

@@ -64,9 +64,9 @@ module Storm
           service.from_hash s
           service
         end
-        @session_persistence = h[:session_persistence] == 0 ? false : true
-        @ssl_includes = h[:ssl_includes] == 0 ? false : true
-        @ssl_termination = h[:ssl_termination] == 0 ? false : true
+        @session_persistence = h[:session_persistence].to_i == 0 ? false : true
+        @ssl_includes = h[:ssl_includes].to_i == 0 ? false : true
+        @ssl_termination = h[:ssl_termination].to_i == 0 ? false : true
         @strategy = h[:strategy]
         @vip = h[:vip]
       end
@@ -102,7 +102,7 @@ module Storm
       def self.available(name)
         data = Storm::Base::SODServer.remote_call \
                     '/Network/LoadBalancer/available', :name => name
-        data[:available] == 0 ? false : true
+        data[:available].to_i == 0 ? false : true
       end
 
       # Create a new loadbalancer

@@ -17,8 +17,8 @@ module Storm
       attr_accessor :xen
 
       def from_hash(h)
-        @kvm = h[:kvm] ? true : false
-        @xen = h[:xen] ? true : false
+        @kvm = h[:kvm].to_i == 1 ? true : false
+        @xen = h[:xen].to_i == 1 ? true : false
       end
     end
 
@@ -31,7 +31,7 @@ module Storm
 
       def from_hash(h)
         super
-        @is_default = h[:is_default] ? true : false
+        @is_default = h[:is_default].to_i == 1 ? true : false
         @name = h[:name]
         @region = ZoneRegion.new
         @region.from_hash h[:region]

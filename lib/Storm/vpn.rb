@@ -14,7 +14,7 @@ module Storm
 
     def from_hash(h)
       super
-      @active = h[:active] == 0 ? false : true
+      @active = h[:active].to_i == 0 ? false : true
       @active_status = h[:active_status]
       @current_users = h[:current_users]
       @domain = h[:domain]
