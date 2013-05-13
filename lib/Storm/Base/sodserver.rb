@@ -8,21 +8,24 @@ module Storm
     STORM_API_VERSION = 'v1'
 
     class SODServer
-      def self.remote_call(path, paramter={})
+      def self.remote_call(path, parameter={})
         real_path = "/#{STORM_API_VERSION}#{path}"
         param = {}
         param[:params] = parameter
-        resp = Excon.post :path => real_path, :body => param.to_json
+        resp = Excon.post STORM_BASE_URL,
+                          :path => real_path,
+                          :body => param.to_json
         if resp.status == 200
           data = JSON.parse resp.body
           if data[:error_class]
             e_msg = "#{ data[:error_class] } : #{ data[:error_message] }"
-            raise StormException, e_msg
+            raise Storm::Base::Exception::StormException, e_msg
           else
             data
           end
         else
-          raise HttpException, "HTTP Error: #{ resp.status.to_s }"
+          e_msg = "HTTP Error: #{ resp.status.to_s }"
+          raise Storm::Base::Exception::HttpException, e_msg
         end
       end
 
@@ -30,12 +33,14 @@ module Storm
         real_path = "/#{STORM_API_VERSION}#{path}"
         param = {}
         param[:params] = parameter
-        resp = Excon.post :path => real_path, :body => param.to_json
+        resp = Excon.post STORM_BASE_URL,
+                          :path => real_path,
+                          :body => param.to_json
         if resp.status == 200
           data = JSON.parse resp.body
           if data[:error_class]
             e_msg = "#{ data[:error_class] } : #{ data[:error_message] }"
-            raise StormException, e_msg
+            raise Storm::Base::Exception::StormException, e_msg
           else
             res = {}
             res[:items_count] = data[:items_count]
@@ -47,7 +52,8 @@ module Storm
             res
           end
         else
-          raise HttpException, "HTTP Error: #{ resp.status.to_s }"
+          e_msg = "HTTP Error: #{ resp.status.to_s }"
+          raise Storm::Base::Exception::HttpException, e_msg
         end
       end
     end
