@@ -24,7 +24,7 @@ module Storm
             data
           end
         else
-          e_msg = "HTTP Error: #{ resp.status.to_s }"
+          e_msg = "HTTP Error: #{ resp.status.to_s } => #{ resp.body }"
           raise Storm::Base::Exception::HttpException, e_msg
         end
       end
@@ -52,7 +52,7 @@ module Storm
             res
           end
         else
-          e_msg = "HTTP Error: #{ resp.status.to_s }"
+          e_msg = "HTTP Error: #{ resp.status.to_s } => #{ resp.body }"
           raise Storm::Base::Exception::HttpException, e_msg
         end
       end
