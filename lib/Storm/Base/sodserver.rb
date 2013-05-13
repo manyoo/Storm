@@ -21,7 +21,7 @@ module Storm
         if resp.status == 200
           data = JSON.parse resp.body, :symbolize_names => true
           if data[:error_class]
-            e_msg = "#{ data[:error_class] } : #{ data[:error_message] }"
+            e_msg = "#{ data[:error_class] } : #{ data[:full_message] }"
             raise Storm::Base::Exception::StormException, e_msg
           else
             data
@@ -43,7 +43,7 @@ module Storm
         if resp.status == 200
           data = JSON.parse resp.body, :symbolize_names => true
           if data[:error_class]
-            e_msg = "#{ data[:error_class] } : #{ data[:error_message] }"
+            e_msg = "#{ data[:error_class] } : #{ data[:full_message] }"
             raise Storm::Base::Exception::StormException, e_msg
           else
             res = {}
