@@ -82,15 +82,11 @@ module Storm
 
     # Returns information about a product's pricing and options
     #
-    # @param als [String] product alias
-    # @param code [String] a valid product info
-    def details(als=nil, code=nil)
-      raise "at least one of als and code must be provided" if als == nil and \
-                                                               code == nil
-      param = {}
-      param[:alias] = als if als
-      param[:code] = code if code
-      data = Storm::Base::SODServer.remote_call '/Product/details', param
+    # @param options [Hash] optional keys:
+    #  :alias [String] product alias
+    #  :code [String] a valid product info
+    def details(options)
+      data = Storm::Base::SODServer.remote_call '/Product/details', options
       self.from_hash data
     end
 
@@ -110,20 +106,16 @@ module Storm
     # Returns production information for all products, or products in a series
     # or category depending on the arguments passed
     #
-    # @param category [String] product category
-    # @param page_num [Int] page number
-    # @param page_size [Int] page size
-    # @param series [String] product series
+    # @param options [Hash] optional keys:
+    #  :category [String] product category
+    #  :page_num [Int] page number
+    #  :page_size [Int] page size
+    #  :series [String] product series
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
     #                Product objects)
-    def self.list(category=nil, page_num=0, page_size=0, series=nil)
-      param = {}
-      param[:category] = category if category
-      param[:page_num] = page_num if page_num
-      param[:page_size] = page_size if page_size
-      param[:series] = series if series
-      Storm::Base::SODServer.remote_list '/Product/list', param do |i|
+    def self.list(options)
+      Storm::Base::SODServer.remote_list '/Product/list', options do |i|
         prd = Product.new
         prd.from_hash i
         prd

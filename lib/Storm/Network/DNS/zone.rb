@@ -54,16 +54,16 @@ module Storm
         # Add a new DNS Zone
         #
         # @param name [String]
-        # @param region_support [Bool]
-        # @param register [Bool]
-        # @param zone_data [ZoneData]
+        # @param options [Hash] optional keys:
+        #  :region_support [Bool]
+        #  :register [Bool]
+        #  :zone_data [ZoneData]
         # @return [Zone] a new Zone object
-        def self.create(name, region_support, register, zone_data)
-          param = {}
-          param[:name] = name
-          param[:region_support] = region_support ? 1 : 0
-          param[:register] = register ? 1 : 0
-          param[:zone_data] = zone_data.to_hash
+        def self.create(name, options={})
+          param = { :name => name }.merge options
+          param[:region_support] = param[:region_support] ? 1 : 0
+          param[:register] = param[:register] ? 1 : 0
+          param[:zone_data] = param[:zone_data].to_hash if param[:zone_data]
           data = Storm::Base::SODServer.remote_call '/Network/DNS/Zone/create',
                                                     param
           z = Zone.new
@@ -98,17 +98,15 @@ module Storm
 
         # Get a list of zones
         #
-        # @param page_num [Int] page number
-        # @param page_size [Int] page size
+        # @param options [Hash] optional keys:
+        #  :page_num [Int] page number
+        #  :page_size [Int] page size
         # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
         #                :page_size, :page_total and :items (an array of
         #                Zone objects)
-        def self.list(page_num, page_size)
-          param = {}
-          param[:page_num] = page_num if page_num
-          param[:page_size] = page_size if page_size
+        def self.list(options={})
           Storm::Base::SODServer.remote_list '/Network/DNS/Zone/list',
-                                             param do |z|
+                                             options do |z|
                                               zone = Zone.new
                                               zone.from_hash z
                                               zone
@@ -117,12 +115,13 @@ module Storm
 
         # Update the zone features
         #
-        # @param dns_region_support [Bool]
-        def update(dns_region_support)
-          supp = dns_region_support ? 1 : 0
+        # @param options [Hash] optional keys:
+        #  :DNSRegionSupport [Bool]
+        def update(options={})
+          param = { :id => self.uniq_id }.merge options
+          param[:DNSRegionSupport] = param[:DNSRegionSupport] ? 1 : 0
           data = Storm::Base::SODServer.remote_call '/Network/DNS/Zone/update',
-                                                    :DNSRegionSupport => supp,
-                                                    :id => self.uniq_id
+                                                    param
           self.from_hash data
         end
       end

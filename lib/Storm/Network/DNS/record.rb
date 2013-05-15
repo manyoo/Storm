@@ -124,23 +124,23 @@ module Storm
         # Create a new resource recrod to a zone file
         #
         # @param name [String]
-        # @param prio [Int]
         # @param rdata [String]
         # @param region_overrides [Array] an array of RecordRegion objects
-        # @param ttl [Int]
         # @param type [String] One of 'A', 'TXT', 'CNAME', 'NS', 'SOA', 'MX',
         #                      'PTR', 'SRV', 'AAAA'
         # @param zone [Zone]
+        # @param options [Hash] optional keys:
+        #   :prio [Int]
+        #   :ttl [Int]
         # @return [Record] a new Record object
-        def self.create(name, prio, rdata, region_overrides, ttl, type, zone)
-          param = {}
-          param[:name] = name
-          param[:prio] = prio
-          param[:rdata] = rdata
-          param[:region_overrides] = region_overrides.map { |i| i.to_hash }
-          param[:ttl] = ttl if ttl
-          param[:type] = type
-          param[:zone_id] = zone.uniq_id
+        def self.create(name, rdata, region_overrides, type, zone, options={})
+          param = {
+            :name => name,
+            :rdata => rdata,
+            :region_overrides => region_overrides.map { |i| i.to_hash },
+            :type => type,
+            :zone_id => zone.uniq_id
+          }.merge options
           data = Storm::Base::SODServer.remote_call \
                       '/Network/DNS/Record/create', param
           rec = Record.new
@@ -167,16 +167,14 @@ module Storm
         # Get a list of records from a zone file
         #
         # @param zone [Zone]
-        # @param page_num [Int] page number
-        # @param page_size [Int] page size
+        # @param options [Hash] optional keys:
+        #  :page_num [Int] page number
+        #  :page_size [Int] page size
         # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
         #                :page_size, :page_total and :items (an array of
         #                Record objects)
-        def self.list(zone, page_num, page_size)
-          param = {}
-          param[:zone_id] = zone.uniq_id
-          param[:page_num] = page_num if page_num
-          param[:page_size] = page_size if page_size
+        def self.list(zone, options)
+          param = { :uniq_id => zone.uniq_id }.merge options
           Storm::Base::SODServer.remote_list '/Network/DNS/Record/list',
                                              param do |r|
                                               record = Record.new
@@ -187,14 +185,13 @@ module Storm
 
         # Update a resource record
         #
-        # @param prio [Int]
-        # @param rdata [String]
-        # @param ttl [Int]
-        def update(prio, rdata, ttl)
-          param = {}
-          param[:id] = self.uniq_id
-          param[:rdata] = rdata if ttl
-          param[:ttl] = ttl if ttl
+        # @param options [Hash] optional keys:
+        # :prio [Int]
+        # :rdata [String]
+        # :ttl [Int]
+        # either :rdata or :ttl must be provided
+        def update(options={})
+          param = { :id => self.uniq_id }.merge options
           data = Storm::Base::SODServer.remote_call \
                       '/Network/DNS/Record/update', param
           self.from_hash data

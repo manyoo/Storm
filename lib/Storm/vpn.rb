@@ -55,16 +55,14 @@ module Storm
 
     # Lists the authorized VPN users for a given account
     #
-    # @param page_num [Int] page number
-    # @param page_size [Int] page size
+    # @param options [Hash] optional keys:
+    #  :page_num [Int] page number
+    #  :page_size [Int] page size
     # @return [Hash]  a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
     #                VPNUser objects)
-    def list(page_num, page_size)
-      param = {}
-      param[:page_num] = page_num if page_num
-      param[:page_size] = page_size if page_size
-      param[:uniq_id] = self.uniq_id
+    def list(options={})
+      param = { :uniq_id => self.uniq_id }.merge options
       Storm::Base::SODServer.remote_list '/VPN/list', param do |u|
         user = VPNUser.new
         user.from_hash u
@@ -74,13 +72,11 @@ module Storm
 
     # Update the features of a VPN service
     #
-    # @param domain [String]
-    # @param features [Hash]
-    def update(domain, features)
-      param = {}
-      param[:domain] = domain
-      param[:features] = features
-      param[:uniq_id] = self.uniq_id
+    # @param options [Hash] optional keys:
+    #  :domain [String]
+    #  :features [Hash]
+    def update(options={})
+      param = { :uniq_id => self.uniq_id }.merge options
       data = Storm::Base::SODServer.remote_call '/VPN/update', param
       self.from_hash data
     end

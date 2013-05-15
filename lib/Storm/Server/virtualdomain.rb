@@ -53,16 +53,14 @@ module Storm
       # Lists the domains for a given server
       #
       # @param server [Server] an existing server object
-      # @param page_num [Int] page number
-      # @param page_size [Int] page size
+      # @param options [Hash] optional keys:
+      #  :page_num [Int] page number
+      #  :page_size [Int] page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                VirtualDomain objects)
-      def self.list(server, page_num=0, page_size=0)
-        param = {}
-        param[:uniq_id] = server.uniq_id
-        param[:page_num] = page_num if page_num
-        param[:page_size] = page_size if page_size
+      def self.list(server, options={})
+        param = { :uniq_id => server.uniq_id }.merge options
         Storm::Base::SODServer.remote_list '/Server/VirtualDomain/list',
                                                   param do |i|
           vd = VirtualDomain.new
@@ -73,17 +71,15 @@ module Storm
 
       # Lists the domains for in an account that are not linked to a server
       #
-      # @param page_num [Int] page number
-      # @param page_size [Int] page size
+      # @param options [Hash] optional keys:
+      # :page_num [Int] page number
+      # :page_size [Int] page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                VirtualDomain objects)
-      def self.list_orphans(page_num=0, page_size=0)
-        param = {}
-        param[:page_num] = page_num if page_num
-        param[:page_size] = page_size if page_size
+      def self.list_orphans(options={})
         Storm::Base::SODServer.remote_list \
-                     '/Server/VirtualDomain/listOrphans', param do |i|
+                     '/Server/VirtualDomain/listOrphans', options do |i|
           vd = VirtualDomain.new
           vd.from_hash i
           vd

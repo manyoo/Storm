@@ -33,17 +33,15 @@ module Storm
 
         # Returns the list of domain registrations for a given account.
         #
-        # @param page_num [Int] page number
-        # @param page_size [Int] page size
+        # @param options [Hash] optional keys:
+        #  :page_num [Int] page number
+        #  :page_size [Int] page size
         # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
         #                :page_size, :page_total and :items (an array of
         #                Domain objects)
-        def self.list(page_num, page_size)
-          param = {}
-          param[:page_num] = page_num if page_num
-          param[:page_size] = page_size if page_size
+        def self.list(options={})
           Storm::Base::SODServer.remote_list \
-                '/Network/DNS/Domain/list', param do |i|
+                '/Network/DNS/Domain/list', options do |i|
                   dm = Domain.new
                   dm.from_hash i
                   dm

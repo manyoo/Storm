@@ -110,30 +110,25 @@ module Storm
       # @param name [String] loadbalancer name
       # @param services [Array] an array of service objects
       # @param strategy [String]
-      # @param nodes [Array] an array of node IPs
-      # @param region [Int] region id
-      # @param session_persistence [Bool]
-      # @param ssl_cert [String] ssl certificate string
-      # @param ssl_includes [Bool]
-      # @param ssl_int [String] ssl public certificate string
-      # @param ssl_key [String] a private key string
-      # @param ssl_termination [Bool]
+      # @param options [Hash] optional keys:
+      #  :nodes [Array] an array of node IPs
+      #  :region [Int] region id
+      #  :session_persistence [Bool]
+      #  :ssl_cert [String] ssl certificate string
+      #  :ssl_includes [Bool]
+      #  :ssl_int [String] ssl public certificate string
+      #  :ssl_key [String] a private key string
+      #  :ssl_termination [Bool]
       # @return [LoadBalancer] a new LoadBalancer object
-      def self.create(name, services, strategy, nodes, region,
-                      session_persistence, ssl_cert, ssl_includes, ssl_int,
-                      ssl_key, ssl_termination)
-        param = {}
-        param[:name] = name
-        param[:services] = services.map { |s| s.to_hash }
-        param[:strategy] = strategy
-        param[:node] = nodes if nodes
-        param[:region] = region if region
-        param[:session_persistence] = session_persistence ? 1 : 0
-        param[:ssl_cert] = ssl_cert if ssl_cert
-        param[:ssl_includes] = ssl_includes ? 1 : 0
-        param[:ssl_int] = ssl_int if ssl_int
-        param[:ssl_key] = ssl_key if ssl_key
-        param[:ssl_termination] = ssl_termination ? 1 : 0
+      def self.create(name, services, strategy, options={})
+        param = {
+          :name => name,
+          :services => services.map { |s| s.to_hash },
+          :strategy => strategy
+        }.merge options
+        param[:session_persistence] = param[:session_persistence] ? 1 : 0
+        param[:ssl_includes] = param[:ssl_includes] ? 1 : 0
+        param[:ssl_termination] = param[:ssl_termination] ? 1 : 0
         data = Storm::Base::SODServer.remote_call \
                     '/Network/LoadBalancer/create', param
         lb = LoadBalancer.new
@@ -159,19 +154,16 @@ module Storm
 
       # Get a list of all LoadBalancers
       #
-      # @param page_num [Int] page number
-      # @param page_size [Int] page size
-      # @param region [Int] region id
+      # @param options [Hash] optional keys:
+      #  :page_num [Int] page number
+      #  :page_size [Int] page size
+      #  :region [Int] region id
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                LoadBalancer objects)
-      def self.list(page_num, page_size, region)
-        param = {}
-        param[:page_num] = page_num if page_num
-        param[:page_size] = page_size if page_size
-        param[:region] = region if region
+      def self.list(options={})
         Storm::Base::SODServer.remote_list \
-                    '/Network/LoadBalancer/list', param do |i|
+                    '/Network/LoadBalancer/list', options do |i|
           lb = LoadBalancer.new
           lb.from_hash i
           lb
@@ -183,7 +175,7 @@ module Storm
       #
       # @param region [Int] region id
       # @return [Array] an array of Server objects
-      def self.possible_nodes(region)
+      def self.possible_nodes(region=nil)
         data = Storm::Base::SODServer.remote_call \
                     '/Network/LoadBalancer/possibleNodes',
                     :region => region
@@ -231,30 +223,25 @@ module Storm
 
       # Update an existing loadbalancer
       #
-      # @param name [String] loadbalancer name
-      # @param nodes [Array] an array of node IPs
-      # @param services [Array] an array of Service object
-      # @param session_persistence [Bool]
-      # @param ssl_cert [String] a certificate string
-      # @param ssl_includes [Bool]
-      # @param ssl_int [String] a certificate string
-      # @param ssl_key [String] a private key string
-      # @param ssl_termination [Bool]
-      # @param strategy [String] strategy name
-      def update(name, nodes, services, session_persistence, ssl_cert,
-                 ssl_includes, ssl_int, ssl_key, ssl_termination,
-                 strategy)
-        param = {}
-        param[:name] = name
-        param[:node] = nodes
-        param[:services] = services.map { |s| s.to_hash }
-        param[:session_persistence] = session_persistence ? 1 : 0
-        param[:ssl_cert] = ssl_cert if ssl_cert
-        param[:ssl_includes] = ssl_includes ? 1 : 0
-        param[:ssl_int] = ssl_int if ssl_int
-        param[:ssl_key] = ssl_key if ssl_key
-        param[:ssl_termination] = ssl_termination ? 1 : 0
-        param[:strategy] = strategy if strategy
+      # @param options [Hash] optional keys:
+      #  :name [String] loadbalancer name
+      #  :nodes [Array] an array of node IPs
+      #  :services [Array] an array of Service object
+      #  :nodes [Array] an array of node IPs
+      #  :region [Int] region id
+      #  :session_persistence [Bool]
+      #  :ssl_cert [String] ssl certificate string
+      #  :ssl_includes [Bool]
+      #  :ssl_int [String] ssl public certificate string
+      #  :ssl_key [String] a private key string
+      #  :ssl_termination [Bool]
+      #  :strategy [String] strategy name
+      def update(options={})
+        param = { :uniq_id => self.uniq_id }.merge options
+        param[:services] = param[:services].map { |s| s.to_hash }
+        param[:session_persistence] = param[:session_persistence] ? 1 : 0
+        param[:ssl_includes] = param[:ssl_includes] ? 1 : 0
+        param[:ssl_termination] = param[:ssl_termination] ? 1 : 0
         data = Storm::Base::SODServer.remote_call \
                     '/Network/LoadBalancer/update', param
         self.from_hash data

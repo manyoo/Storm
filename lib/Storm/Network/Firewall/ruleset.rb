@@ -46,17 +46,15 @@ module Storm
         # Returns an array reference of rulesets that have been saved for use
         # by this account.
         #
-        # @param page_num [Int] page number
-        # @param page_size [Int] page_size
+        # @param options [Hash] optional keys:
+        #  :page_num [Int] page number
+        #  :page_size [Int] page_size
         # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
         #                :page_size, :page_total and :items (an array of
         #                Ruleset objects)
-        def self.list(page_num, page_size)
-          param = {}
-          param[:page_num] = page_num if page_num
-          param[:page_size] = page_size if page_size
+        def self.list(options={})
           Storm::Base::SODServer.remote_list \
-                        '/Network/Firewall/Ruleset/list', param do |i|
+                        '/Network/Firewall/Ruleset/list', options do |i|
             rs = Ruleset.new
             rs.from_hash i
             rs

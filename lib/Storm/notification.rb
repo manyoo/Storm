@@ -48,25 +48,23 @@ module Storm
 
     # Get a list of all notifications for an account or server
     #
-    # @param category [String] category name
-    # @param page_num [Int] page number
-    # @param page_size [Int] page size
-    # @param resolved [Bool] if the Notification is resolved
-    # @param system [String] system name
-    # @param server [Server] a server object
+    # @param options [Hash] optional keys:
+    #  :category [String] category name
+    #  :page_num [Int] page number
+    #  :page_size [Int] page size
+    #  :resolved [Bool] if the Notification is resolved
+    #  :system [String] system name
+    #  :server [Server] a server object
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
     #                Notification objects)
-    def self.all(category=nil, page_num=0, page_size=0, resolved=false,
-                 system=nil, server=nil)
-      param = {}
-      param[:category] = category if category
-      param[:page_num] = page_num if page_num
-      param[:page_size] = page_size if page_size
-      param[:resolved] = resolved ? 1 : 0
-      param[:system] = system if system
-      param[:uniq_id] = server.uniq_id if server
-      Storm::Base::SODServer.remote_list '/Notifications/all', param do |i|
+    def self.all(options={})
+      options[:resolved] = options[:resolved] ? 1 : 0
+      if options[:server]
+        options[:uniq_id] = options[:server].uniq_id
+        options.delete :server
+      end
+      Storm::Base::SODServer.remote_list '/Notifications/all', options do |i|
         notification = Notification.new
         notification.from_hash i
         notification
@@ -75,24 +73,22 @@ module Storm
 
     # Get a list of unresolved notifcations for an account or server
     #
-    # @param category [String] category name
-    # @param page_num [Int] page number
-    # @param page_size [Int] page size
-    # @param resolved [Bool] if the Notification is resolved
-    # @param system [String] system name
-    # @param server [Server] a server object
+    # @param options [Hash] optional keys:
+    #  :category [String] category name
+    #  :page_num [Int] page number
+    #  :page_size [Int] page size
+    #  :resolved [Bool] if the Notification is resolved
+    #  :system [String] system name
+    #  :server [Server] a server object
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
     #                Notification objects)
-    def self.current(category=nil, page_num=0, page_size=0, resolved=false,
-                     system=nil, server=nil)
-      param = {}
-      param[:category] = category if category
-      param[:page_num] = page_num if page_num
-      param[:page_size] = page_size if page_size
-      param[:resolved] = resolved ? 1 : 0
-      param[:system] = system if system
-      param[:uniq_id] = server.uniq_id if server
+    def self.current(options={})
+      options[:resolved] = options[:resolved] ? 1 : 0
+      if options[:server]
+        options[:uniq_id] = options[:server].uniq_id
+        options.delete :server
+      end
       Storm::Base::SODServer.remote_list '/Notifications/current', param do |i|
         notification = Notification.new
         notification.from_hash i
@@ -102,25 +98,27 @@ module Storm
 
     # Gets information about a specific notification
     #
-    # @param system [String] system name
-    # @param system_identifier [String] system identifier
-    # @param limit [Int] a non-negitive integer
+    # @param options [Hash] optional keys:
+    #  :system [String] system name
+    #  :system_identifier [String] system identifier
+    #  :limit [Int] a non-negitive integer
     # @return [Notification] a new Notification object
-    def self.details(system, system_identifier, limit=0)
-      param = {}
-      param[:limit] = limit if limit
-      param[:system] = system
-      param[:system_identifier] = system_identifier
-      data = Storm::Base::SODServer.remote_call '/Notifications/details', param
+    def self.details(options={})
+      data = Storm::Base::SODServer.remote_call \
+                  '/Notifications/details', options
       notification = Notification.new
       notification.from_hash data
       notification
     end
 
     # Gets information about the current notification
-    def details
+    #
+    # @param options [Hash] optional keys:
+    #  :limit [Int]
+    def details(options={})
+      param = { :id => self.uniq_id }.merge options
       data = Storm::Base::SODServer.remote_call '/Notifications/details',
-                                                :id => self.uniq_id
+                                                param
       self.from_hash data
     end
 

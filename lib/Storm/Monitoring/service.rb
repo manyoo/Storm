@@ -48,14 +48,13 @@ module Storm
       # Update service monitoring settings for a server
       #
       # @param server [Server] the specified server
-      # @param enabled [Bool] if it's enabled
-      # @param services [Array] an array of strings
+      # @param options [Hash] optional keys:
+      #   :enabled [Bool] if it's enabled
+      #   :services [Array] an array of strings
       # @return [Service] a new Service object
-      def self.update(server, enabled, services)
-        param = {}
-        param[:uniq_id] = server.uniq_id
-        param[:enabled] = enabled ? 1 : 0
-        param[:services] = services
+      def self.update(server, options={})
+        param = { :uniq_id => server.uniq_id }.merge options
+        param[:enabled] = param[:enabled] ? 1 : 0
         data = Storm::Base::SODServer.remote_call \
                      '/Monitoring/Services/update', param
         serv = Service.new

@@ -106,18 +106,15 @@ module Storm
       # Get a bandwidth usage graph for a server
       #
       # @param server [Server] a specific server
-      # @param frequency [String] one of 'daily', 'weekly', 'monthly', 'yearly'
-      # @param height [Int] image height
-      # @param width [Int] image width
-      # @param small [Bool] whether need small image
+      # @param options [Hash] optional keys:
+      #   :frequency [String] one of 'daily', 'weekly', 'monthly', 'yearly'
+      #   :height [Int] image height
+      #   :width [Int] image width
+      #   :small [Bool] whether need small image
       # @return [Hash] a hash with keys: :content and :content_type
-      def self.graph(server, frequency, height, width, small)
-        param = {}
-        param[:uniq_id] = server.uniq_id
-        param[:frequency] = frequency if frequency
-        param[:height] = height if height
-        param[:width] = width if width
-        param[:small] = small ? 1 : 0
+      def self.graph(server, options={})
+        param = { :uniq_id => server.uniq_id }.merge options
+        param[:small] = param[:small] ? 1 : 0
         Storm::Base::SODServer.remote_call '/Monitoring/Bandwidth/graph', param
       end
 

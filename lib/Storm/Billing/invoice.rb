@@ -21,12 +21,12 @@ module Storm
         @bill_date = self.get_datetime h, :bill_date
         @due = h[:due]
         @end_date = self.get_datetime h, :end_date
-        @lineitem_groups = self.get_array do |group|
+        @lineitem_groups = h[:lineitem_groups].map do |group|
           bg = BillGroup.new
           bg.from_hash group
           bg
         end
-        @payments = self.get_array do |p|
+        @payments = h[:payments].map do |p|
           pm = Payment.new
           pm.from_hash p
           pm
@@ -51,16 +51,20 @@ module Storm
       # Invoices are created at your regular billing date, but are also
       # created for one-off items like creating or cloning a server.
       #
-      # @param num [Int] a positive integer for page number
-      # @param size [Int] a positive integer for page size
+      # @param options [Hash] optional keys:
+      #  page_num [Int] a positive integer for page number
+      #  page_size [Int] a positive integer for page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                Invoice objects)
-      def self.list(num, size)
-        raise 'num and size must be positive' unless num > 0 and size > 0
+      def self.list(options={})
+        params = {
+          :page_num => 1,
+          :page_size => 10
+        }.merge(options)
         Storm::Base::SODServer.remote_list '/Billing/Invoice/list',
-                                            :page_num => num,
-                                            :page_size => size do |i|
+                                    :page_num => params[:page_num],
+                                    :page_size => params[:page_size] do |i|
           item = Invoice.new
           item.from_hash i
           item
@@ -138,14 +142,15 @@ module Storm
       # exception will be thrown if used with a check account.
       #
       # @param amount [Int] A positive monetary value
-      # @param card_code [String] The cvv code of a credit card, consisting of a
-      # number at least 3 digits and up to 4 digits in length]
+      # @param options [Hash] optional keys:
+      #       :card_code [String] The cvv code of a credit card, consisting of
+      #           a number at least 3 digits and up to 4 digits in length]
       # @return [Int] A positive monetary value
-      def self.make(amount, card_code='')
+      def self.make(amount, options)
         raise 'amount should be positive' unless amount > 0
+        param = { :amount => amount }.merge options
         data = Storm::Base::SODServer.remote_call '/Billing/Payment/make',
-                                                  :amount => amount,
-                                                  :card_code => card_code
+                                                  param
         data[:amount]
       end
     end

@@ -47,11 +47,11 @@ module Storm
             raise Storm::Base::Exception::StormException, e_msg
           else
             res = {}
-            res[:items_count] = data[:items_count]
-            res[:items_total] = data[:items_total]
-            res[:page_num] = data[:page_num]
-            res[:page_size] = data[:page_size]
-            res[:page_total] = data[:page_total]
+            res[:item_count] = data[:item_count].to_i
+            res[:item_total] = data[:item_total].to_i
+            res[:page_num] = data[:page_num].to_i
+            res[:page_size] = data[:page_size].to_i
+            res[:page_total] = data[:page_total].to_i
             res[:items] = data[:items].map { |e| yield e }
             res
           end

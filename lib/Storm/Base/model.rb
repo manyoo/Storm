@@ -20,7 +20,11 @@ module Storm
       def get_datetime(h, name)
         value = h[name]
         if value
-          return DateTime.strptime(value, '%Y-%m-%d %H:%M:%S')
+          if self.long_datetime_str? value
+            return DateTime.strptime(value, '%Y-%m-%d %H:%M:%S')
+          else
+            return DateTime.strptime(value, '%Y-%m-%d %H:%M')
+          end
         end
         nil
       end
@@ -50,6 +54,19 @@ module Storm
           arr.map blk
         end
         []
+      end
+
+      private
+
+      def long_datetime_str?(s)
+        idx1 = s.index ':'
+        if idx1
+          idx2 = s[(idx1+1)..-1].index ':'
+          if idx2
+            return true
+          end
+        end
+        false
       end
     end
   end

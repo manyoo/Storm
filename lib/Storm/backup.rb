@@ -24,29 +24,33 @@ module Storm
 
     # Get information about a specific backup
     #
-    # @param server [Server] an existing server object
-    def details(server)
-      param = {}
-      param[:id] = self.uniq_id
-      param[:uniq_id] = server.uniq_id
+    # @param options [Hash] optional keys:
+    #  :server [Server] an existing server object
+    def details(options={})
+      param = { :id => self.uniq_id }.merge options
+      if param[:server]
+        param[:uniq_id] = param[:server].uniq_id
+        param.delete :uniq_id
+      end
       data = Storm::Base::SODServer.remote_call '/Storm/Backup/details', param
       self.from_hash data
     end
 
     # Get a paginated list of backups for a particular server
     #
-    # @param server [Server] an existing server object
-    # @param page_num [Int] page number
-    # @param page_size [Int] page size
+    # @param options [Hash] optional keys:
+    #  :server [Server] an existing server object
+    #  :page_num [Int] page number
+    #  :page_size [Int] page size
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
     #                Backup objects)
-    def self.list(server, page_num=0, page_size=0)
-      param = {}
-      param[:uniq_id] = server.uniq_id
-      param[:page_num] = page_num if page_num
-      param[:page_size] = page_size if page_size
-      Storm::Base::SODServer.remote_list '/Storm/Backup/list', param do |i|
+    def self.list(options={})
+      if options[:server]
+        options[:uniq_id] = options[:server].uniq_id
+        options.delete :server
+      end
+      Storm::Base::SODServer.remote_list '/Storm/Backup/list', options do |i|
         backup = Backup.new
         backup.from_hash i
         backup
@@ -56,13 +60,15 @@ module Storm
     # Re-images a server with the current backup image
     #
     # @param server [Server] an existing server object
-    # @param force [Bool] whether forcing the restore
+    # @param options [Hash] optional keys:
+    #  :force [Bool] whether forcing the restore
     # @return [String] a string identifier
-    def restore(server, force=false)
-      param = {}
-      param[:id] = self.uniq_id
-      param[:uniq_id] = server.uniq_id
-      param[:force] = force ? 1 : 0
+    def restore(server, options={})
+      param = {
+        :id => self.uniq_id,
+        :uniq_id => server.uniq_id
+        }.merge options
+      param[:force] = param[:force] ? 1 : 0
       data = Storm::Base::SODServer.remote_call '/Storm/Backup/restore', param
       data[:restored]
     end

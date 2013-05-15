@@ -59,16 +59,14 @@ module Storm
 
     # Get a paginated list of previously-created images for your account
     #
-    # @param page_num [Int] page number
-    # @param page_size [Int] page size
+    # @param options [Hash] optional keys:
+    #  :page_num [Int] page number
+    #  :page_size [Int] page size
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
     #                Image objects)
-    def self.list(page_num=0, page_size=0)
-      param = {}
-      param[:page_num] = page_num if page_num
-      param[:page_size] = page_size if page_size
-      Storm::Base::SODServer.remote_list '/Storm/Image/list', param do |i|
+    def self.list(options={})
+      Storm::Base::SODServer.remote_list '/Storm/Image/list', options do |i|
         img = Image.new
         img.from_hash i
         img
@@ -78,13 +76,15 @@ module Storm
     # Re-images a server with the image requested
     #
     # @param server [Server] an existing server object
-    # @param force [Bool] whether forcing the restore
+    # @param options [Hash] optional keys:
+    #  :force [Bool] whether forcing the restore
     # @return [String] a string message
-    def restore(server, force=false)
-      param = {}
-      param[:id] = self.uniq_id
-      param[:uniq_id] = server.uniq_id
-      param[:force] = force ? 1 : 0
+    def restore(server, options={})
+      param = {
+        :id => self.uniq_id,
+        :uniq_id => server.uniq_id
+        }.merge options
+      param[:force] = param[:force] ? 1 : 0
       data = Storm::Base::SODServer.remote_call '/Storm/Image/restore', param
       data[:reimaged]
     end

@@ -41,16 +41,14 @@ module Storm
 
     # Get a list of useable templates
     #
-    # @param page_num [Int] page number
-    # @param page_size [Int] page size
+    # @param options [Hash] optional keys:
+    #  :page_num [Int] page number
+    #  :page_size [Int] page size
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
     #                Template objects)
-    def self.list(page_num=0, page_size=0)
-      param = {}
-      param[:page_num] = page_num if page_num
-      param[:page_size] = page_size if page_size
-      Storm::Base::SODServer.remote_list '/Storm/Template/list', param do |i|
+    def self.list(options={})
+      Storm::Base::SODServer.remote_list '/Storm/Template/list', options do |i|
         tpl = Template.new
         tpl.from_hash i
         tpl
@@ -61,14 +59,16 @@ module Storm
     #
     # @param server [Server] an existing server object
     # @param template [String] template name
-    # @param force [Bool] if true it will rebuild the filesystem on the server
+    # @param options [Hash] optional keys:
+    #  :force [Bool] if true it will rebuild the filesystem on the server
     #                     before restoring
     # @return [String] a result message
-    def self.restore(server, template, force=false)
-      param = {}
-      param[:uniq_id] = server.uniq_id
-      param[:template] = template
-      param[:force] = force ? 1 : 0
+    def self.restore(server, template, options={})
+      param = {
+        :uniq_id => server.uniq_id,
+        :template => template
+        }.merge options
+      param[:force] = param[:force] ? 1 : 0
       data = Storm::Base::SODServer.remote_call '/Storm/Template/restore',
                                                 param
       data[:reimaged]
@@ -77,14 +77,16 @@ module Storm
     # Re-images a server with the current template
     #
     # @param server [Server] an existing server object
-    # @param force [Bool] if true it will rebuild the filesystem on the server
+    # @param options [Hash] optional keys:
+    #  :force [Bool] if true it will rebuild the filesystem on the server
     #                     before restoring
     # @return [String] a result message
-    def restore(server, force=false)
-      param = {}
-      param[:id] = self.uniq_id
-      param[:uniq_id] = server.uniq_id
-      param[:force] = force ? 1 : 0
+    def restore(server, options={})
+      param = {
+        :id => self.uniq_id,
+        :uniq_id => server.uniq_id
+        }.merge options
+      param[:force] = param[:force] ? 1 : 0
       data = Storm::Base::SODServer.remote_call '/Storm/Template/restore',
                                                 param
       data[:reimaged]

@@ -7,12 +7,11 @@ module Storm
         # Remove a reverse DNS record
         #
         # @param ip [String]
-        # @param hostname [String]
+        # @param options [Hash] optional keys:
+        #  :hostname [String]
         # @return [String] the deleted IP address
-        def self.delete(ip, hostname)
-          param = {}
-          param[:ip] = ip
-          param[:hostname] = hostname if hostname
+        def self.delete(ip, options)
+          param = { :ip => ip }.merge options
           data = Storm::Base::SODServer.remote_call \
                       '/Network/DNS/Reverse/delete', param
           data[:deleted]

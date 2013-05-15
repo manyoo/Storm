@@ -85,31 +85,35 @@ module Storm
 
       # Get the details of the IP Pool
       #
-      # @param free_only [Bool]
-      def details(free_only)
-        free = free_only ? 1 : 0
+      # @param options [Hash] optional keys:
+      #  :free_only [Bool]
+      def details(options={})
+        param = {
+          :id => self.uniq_id,
+          :free_only => false
+        }.merge options
+        param[:free_only] = param[:free_only] ? 1 : 0
         data = Storm::Base::SODServer.remote_call '/Network/Pool/details',
-                                                  :id => self.uniq_id,
-                                                  :free_only => free
+                                                  param
         self.from_hash data
       end
 
       # Get a list of network assignments for a particular IP pool
       #
-      # @param zone [Zone] a zone object
-      # @param alsowith [String/Array] one or an array of strings
-      # @param page_num [Int] page number
-      # @param page_size [Int] page size
+      # @param options [Hash] optional keys:
+      #  :zone [Zone] a zone object
+      #  :alsowith [String/Array] one or an array of strings
+      #  :page_num [Int] page number
+      #  :page_size [Int] page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                Assignment objects)
-      def self.list(zone, alsowith, page_num, page_size)
-        param = {}
-        param[:zone_id] = zone.uniq_id if zone
-        param[:alsowith] = alsowith if alsowith
-        param[:page_num] = page_num if page_num
-        param[:page_size] = page_size if page_size
-        Storm::Base::SODServer.remote_list '/Network/Pool/list', param do |i|
+      def self.list(options={})
+        if options[:zone]
+          options[:zone_id] = options[:zone].uniq_id
+          options.delete :zond
+        end
+        Storm::Base::SODServer.remote_list '/Network/Pool/list', options do |i|
           asgnm = Assignment.new
           asgnm.from_hash i
           asgnm
@@ -118,15 +122,12 @@ module Storm
 
       # Update the IP Pool
       #
-      # @param add_ips [Array] an array of IPs to add
-      # @param remove_ips [Array] an array of IPs to remove
-      # @param new_ips [Int] number of new IPs
-      def update(add_ips, remove_ips, new_ips)
-        param = {}
-        param[:id] = self.uniq_id
-        param[:add_ips] = add_ips if add_ips
-        param[:remove_ips] = remove_ips if remove_ips
-        param[:new_ips] = new_ips if new_ips
+      # @param options [Hash] optional keys:
+      #  :add_ips [Array] an array of IPs to add
+      #  :remove_ips [Array] an array of IPs to remove
+      #  :new_ips [Int] number of new IPs
+      def update(options={})
+        param = { :id => self.uniq_id }.merge options
         data = Storm::Base::SODServer.remote_call '/Network/Pool/update', param
         self.from_hash data
       end

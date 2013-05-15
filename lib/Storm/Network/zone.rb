@@ -49,18 +49,15 @@ module Storm
 
       # Get a list of Zones
       #
-      # @param page_num [Int] page number
-      # @param page_size [Int] page size
-      # @param region [String] region name
+      # @param options [Hash] optional keys:
+      #  :page_num [Int] page number
+      #  :page_size [Int] page size
+      #  :region [String] region name
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                Zone objects)
-      def self.list(page_num=0, page_size=0, region=nil)
-        param = {}
-        param[:page_num] = page_num if page_num
-        param[:page_size] = page_size if page_size
-        param[:region] = region if region
-        Storm::Base::SODServer.remote_list '/Network/Zone/list', param do |i|
+      def self.list(options={})
+        Storm::Base::SODServer.remote_list '/Network/Zone/list', options do |i|
           zone = Zone.new
           zone.from_hash i
           zone

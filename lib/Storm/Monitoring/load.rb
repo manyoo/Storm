@@ -87,20 +87,20 @@ module Storm
       #                   'disktmp'    - /tmp volume usage
       #                   'diskusr'    - /usr volume usage
       #                   'diskvar'    - /var volume usage
-      # @param duration [String] options:
+      # @param options [Hash] optional keys:
+      #   :duration [String] options:
       #                   '6hour', '12hour', 'day', '3day', 'week', '2week'
-      # @param compact [Bool] if need compact image
-      # @param height [Int] image height
-      # @param width [Int] image width
+      #   :compact [Bool] if need compact image
+      #   :height [Int] image height
+      #   :width [Int] image width
       # @return [Hash] a hash with keys: :content and :content_type
-      def self.graph(server, stat, duration, compact, height, width)
-        param = {}
-        param[:uniq_id] = server.uniq_id
-        param[:stat] = stat
-        param[:duration] = duration if duration
-        param[:compact] = compact ? 1 : 0
-        param[:height] = height if height
-        param[:width] = width if width
+      def self.graph(server, stat, options={})
+        param = {
+          :uniq_id => server.uniq_id,
+          :stat => stat,
+          :duration => 'day'
+        }.merge options
+        param[:compact] = param[:compact] ? 1 : 0
         Storm::Base::SODServer.remote_call '/Monitoring/Load/graph', param
       end
 

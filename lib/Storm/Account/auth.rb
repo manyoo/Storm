@@ -41,11 +41,12 @@ module Storm
       # be expired permanently and a new token will need to be retrieved using
       # the original password for your user.
       #
-      # @param timeout [Int]
+      # @param options [Hash] with keys:
+      #                :timeout [Int]
       # @return [Hash] a hash with keys: :expires and :token
-      def self.token(timeout)
+      def self.token(options={})
         data = Storm::Base::SODServer.remote_call '/Account/Auth/token',
-                                                  :timeout => timeout
+                                                  options
         @@token = data[:token]
         data
       end

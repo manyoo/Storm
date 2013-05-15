@@ -48,19 +48,26 @@ module Storm
       # Clone the current server. Returns the information about the newly
       # created clone.
       #
+      # @param domain [String] domain name
       # @param password [String] a password of 7-30 characters
-      # @param config [Config] an optional Config object
-      # @param ip_count [Int] a positive integer
-      # @param zone [Int] a positive integer
+      # @param options [Hash] optional keys:
+      #  :config [Config] an optional Config object
+      #  :p_count [Int] a positive integer
+      #  :zone [Zone] the zone you want to clone
       # @return [Server] the newly created Server object
-      def clone(password, config=nil, ip_count=0, zone=0)
-        param = {}
-        param[:config_id] = config.uniq_id if config
-        param[:ip_count] = ip_count if ip_count
-        param[:zone] = zone if zone
-        param[:domain] = @domain
-        param[:password] = password
-        param[:uniq_id] = self.uniq_id
+      def clone(domain, password, options={})
+        param = {
+          :uniq_id => self.uniq_id,
+          :domain => domain,
+          :password => password,
+        }.merge options
+        if param[:config]
+          param[:config_id] = param[:config].uniq_id
+          param.delete :config
+        end
+        if param[:zone]
+          param[:zone] = param[:zone].uniq_id
+        end
         data = Storm::Base::SODServer.remote_call '/Server/clone', param
         cloned_server = Server.new
         cloned_server.from_hash data
@@ -70,29 +77,35 @@ module Storm
       # Provision a new server. This fires off the build process, which does
       # the actual provisioning of a new server. 
       #
-      # @param backup [Backup] an optional Backup object
       # @param domain [String] a fully-qualified domain name
       # @param features [Hash] an associative array of product features
-      # @param image [Image] you can specify a user-created image object
       # @param password [String] the root password for the server (7-30 chars)
-      # @param pub_key [String] optional public ssh key you want added
       # @param type [String] the product code for the provisioned server to
       #                      create
-      # @param zone [Int] the numerical id for the zone you wish to deploy
-      #                   the server in
+      # @param options [Hash] optional keys:
+      #  :backup [Backup] an optional Backup object
+      #  :image [Image] you can specify a user-created image object
+      #  :public_ssh_key [String] optional public ssh key you want added
+      #  :zone [Zone] the zone you wish to deploy the server in
       # @return [Server] a newly created Server object
-      def self.create(domain, features, password, type, backup=nil, image=nil,
-                      pub_key=nil, zone=nil)
-        param = {}
-        param[:domain] = domain
-        param[:features] = features
-        param[:password] = password
-        param[:type] = type
-        param[:backup_id] = backup.uniq_id if backup
-        param[:image_id] = image.uniq_id if image
-        param[:public_ssh_key] = pub_key if pub_key
-        param[:zone] = zone if zone
-
+      def self.create(domain, features, password, type, options={})
+        param = {
+          :domain => domain,
+          :features => features,
+          :password => password,
+          :type => type
+        }.merge options
+        if param[:backup]
+          param[:backup_id] = param[:backup].uniq_id
+          param.delete :backup
+        end
+        if param[:image]
+          param[:image_id] = param[:image].uniq_id
+          param.delete :image
+        end
+        if param[:zone]
+          param[:zone] = param[:zone].uniq_id
+        end
         data = Storm::Base::SODServer.remote_call '/Server/create', param
         server = Server.new
         server.from_hash data
@@ -119,18 +132,14 @@ module Storm
 
       # Get a list of notifications for a specific server
       #
-      # @param page_num [Int] a positive number of page number
-      # @param page_size [Int] a positive number of page size
+      # @param options [Hash] optional keys:
+      #  :page_num [Int] a positive number of page number
+      #  :page_size [Int] a positive number of page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                Notification objects)
-      def history(page_num=0, page_size=0)
-        raise 'num and size must be positive' unless page_num >= 0 and
-                                                     page_size >= 0
-        param = {}
-        param[:page_num] = page_num if page_num
-        param[:page_size] = page_size if page_size
-        param[:uniq_id] = self.uniq_id
+      def history(options={})
+        param = { :uniq_id => self.uniq_id }.merge options
         Storm::Base::SODServer.remote_list '/Server/history', param do |i|
           notification = Notification.new
           notification.from_hash i
@@ -140,22 +149,16 @@ module Storm
 
       # Get a list of servers, services, and devices on your account
       #
-      # @param category [String] service category, valid options: Dedicated,
-      #                          Provisioned, LoadBalancer, HPBS
-      # @param page_num [Int] page number
-      # @param page_size [Int] page size
-      # @param type [String] a valid subaccnt type descriptor
+      # @param options [Hash] optional keys:
+      #  :category [String] service category, valid options: Dedicated,
+      #                     Provisioned, LoadBalancer, HPBS
+      #  :page_num [Int] page number
+      #  :page_size [Int] page size
+      #  :type [String] a valid subaccnt type descriptor
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                Server objects)
-      def self.list(category, page_num=0, page_size=0, type='')
-        raise 'num and size must be positive' unless page_num >= 0 and
-                                                     page_size >= 0
-        param = {}
-        param[:category] = category
-        param[:page_num] = page_num if page_num
-        param[:page_size] = page_size if page_size
-        param[:type] = type
+      def self.list(options={})
         Storm::Base::SODServer.remote_list '/Server/list', param do |i|
           server = Server.new
           server.from_hash i
@@ -165,37 +168,39 @@ module Storm
 
       # Reboot the server
       #
-      # @param force [Bool] whether forcing a hard reboot of the server
+      # @param options [Hash] optional keys:
+      #  :force [Bool] whether forcing a hard reboot of the server
       # @return [Hash] a hash with key :rebooted and :requested, both value
       #                are strings.
-      def reboot(force)
-        param = {}
-        param[:force] = force ? 1 : 0
-        param[:uniq_id] = self.uniq_id
+      def reboot(options={})
+        param = { :uniq_id => self.uniq_id }.merge options
+        param[:force] = param[:force] ? 1 : 0
         Storm::Base::SODServer.remote_call '/Server/reboot', param
       end
 
       # Resize the current server to a new configuration
       #
       # @param new_size [Int] the new size
-      # @param skip_fs_resize [Bool] whether skip filesystem resizing
-      def resize(new_size, skip_fs_resize=false)
-        param = {}
-        param[:new_size] = new_size
-        param[:skip_fs_resize] = skip_fs_resize ? 1 : 0
-        param[:uniq_id] = self.uniq_id
+      # @param options [Hash] optional keys:
+      #  :skip_fs_resize [Bool] whether skip filesystem resizing
+      def resize(new_size, options={})
+        param = {
+          :uniq_id => self.uniq_id,
+          :new_size => new_size
+          }.merge options
+        options[:skip_fs_resize] = options[:skip_fs_resize] ? 1 : 0
         data = Storm::Base::SODServer.remote_call '/Server/resize', param
         self.from_hash data
       end
 
       # Shutdown the current server
       #
-      # @param force [Bool] whether forcing a hard shutdown of the server
+      # @param options [Hash] optional keys:
+      #  :force [Bool] whether forcing a hard shutdown of the server
       # @return [String] a string identifier
-      def shutdown(force)
-        param = {}
-        param[:force] = force ? 1 : 0
-        param[:uniq_id] = self.uniq_id
+      def shutdown(options={})
+        param = { :uniq_id => self.uniq_id }.merge options
+        param[:force] = param[:force] ? 1 : 0
         data = Storm::Base::SODServer.remote_call '/Server/shutdown', param
         data[:shutdown]
       end
@@ -211,13 +216,11 @@ module Storm
 
       # Update the details of the server
       #
-      # @param domain [String] a fully-qualified domain name
-      # @param features [Hash] a hash of features
-      def update(domain, features)
-        param = {}
-        param[:domain] = domain
-        param[:features] = features
-        param[:uniq_id] = self.uniq_id
+      # @param options [Hash] optional keys:
+      #  :domain [String] a fully-qualified domain name
+      #  :features [Hash] a hash of features
+      def update(options={})
+        param = { :uniq_id => self.uniq_id }.merge options
         data = Storm::Base::SODServer.remote_call '/Server/update', param
         self.from_hash data
       end

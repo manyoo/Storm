@@ -56,20 +56,16 @@ module Storm
 
     # Get a list of available server configurations
     #
-    # @param available [Bool] if the config is available
-    # @param category [String] config category ('storm' by default)
-    # @param page_num [Int] page number
-    # @param page_size [Int] page size
+    # @param options [Hash] optional keys:
+    #  :available [Bool] if the config is available
+    #  :category [String] config category ('storm' by default)
+    #  :page_num [Int] page number
+    #  :page_size [Int] page size
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
     #                Config objects)
-    def self.list(available, category='storm', page_num=0, page_size=0)
-      param = {}
-      param[:available] = available ? 1 : 0
-      param[:category] = category
-      param[:page_num] = page_num if page_num
-      param[:page_size] = page_size if page_size
-      Storm::Base::SODServer.remote_list '/Storm/Config/list', param do |i|
+    def self.list(options={})
+      Storm::Base::SODServer.remote_list '/Storm/Config/list', options do |i|
         conf = Config.new
         conf.from_hash i
         conf

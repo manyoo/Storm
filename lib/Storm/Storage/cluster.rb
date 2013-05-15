@@ -26,16 +26,15 @@ module Storm
       # Get a paginated list of block storage clusters, including the zone that
       # the cluster is in.
       #
-      # @param page_num [Int] page number
-      # @param page_size [Int] page size
+      # @param options [Hash] optional keys:
+      #  :page_num [Int] page number
+      #  :page_size [Int] page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                Cluster objects)
-      def self.list(page_num, page_size)
+      def self.list(options)
         Storm::Base::SODServer.remote_list \
-                  '/Storage/Block/Cluster/list',
-                  :page_num => page_num,
-                  :page_size => page_size do |i|
+                  '/Storage/Block/Cluster/list', options do |i|
           cluster = Cluster.new
           cluster.from_hash i
           cluster

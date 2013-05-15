@@ -133,17 +133,17 @@ module Storm
       #
       # @param time [Datetime]
       # @param rating [String] 'good' or 'poor'
-      # @param attributes [Array] an array of strings
-      # @param comment [String]
+      # @param options [Hash] optional keys:
+      #  :attributes [Array] an array of strings
+      #  :comment [String]
       # @return [Transaction] a new Transaction object
-      def add_transaction_feedback(time, rating, attributes, comment)
-        param = {}
-        param[:time] = time
-        param[:rating] = rating
-        param[:attributes] = attributes
-        param[:comment] = comment
-        param[:ticket_id] = self.uniq_id
-        param[:secid] = @secid
+      def add_transaction_feedback(time, rating, options={})
+        param = {
+          :time => time,
+          :rating => rating,
+          :secid => @secid,
+          :ticket_id => self.uniq_id
+        }.merge options
         data = Storm::Base::SODServer.remote_call \
                     '/Support/Ticket/addTransactionFeedback', param
         tran = Transaction.new
@@ -203,18 +203,16 @@ module Storm
 
       # Get a list of tickets
       #
-      # @param page_num [Int] page number
-      # @param page_size [Int] page size
-      # @param status [String] one of 'open', 'recent', 'closed', 'archived'
+      # @param options [Hash] optional keys:
+      #  :page_num [Int] page number
+      #  :page_size [Int] page size
+      #  :status [String] one of 'open', 'recent', 'closed', 'archived'
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                Ticket objects)
-      def self.list(page_num, page_size, status)
-        param = {}
-        param[:page_num] = page_num if page_num
-        param[:page_size] = page_size if page_size
-        param[:status] = status if status
-        Storm::Base::SODServer.remote_list '/Support/Ticket/list', param do |t|
+      def self.list(options={})
+        Storm::Base::SODServer.remote_list \
+              '/Support/Ticket/list', options do |t|
           ticket = Ticket.new
           ticket.from_hash t
           ticket
@@ -236,16 +234,18 @@ module Storm
       # @param from [String]
       # @param subject [String]
       # @param body [String]
-      # @param wrap [Bool]
+      # @param options [Hash] optional keys:
+      #  :wrap [Bool]
       # @return [Bool] if it's replied
-      def reply(from, subject, body, wrap)
-        param = {}
-        param[:from] = from
-        param[:subject] = subject
-        param[:body] = body
-        param[:wrap] = wrap ? 1 : 0
-        param[:id] = self.uniq_id
-        param[:secid] = @secid
+      def reply(from, subject, body, options={})
+        param = {
+          :from => from,
+          :subject => subject,
+          :body => body,
+          :id => self.uniq_id,
+          :secid => @secid
+          }.merge options
+        param[:wrap] = param[:wrap] ? 1 : 0
         data = Storm::Base::SODServer.remote_call '/Support/Ticket/reply',
                                                   param
         data[:reply].to_i == 0 ? false : true
