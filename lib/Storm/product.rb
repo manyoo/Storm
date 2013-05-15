@@ -71,9 +71,11 @@ module Storm
       @default_price = h[:default_price]
       @description = h[:description]
       @features = h[:features]
-      opt = ProductOption.new
-      opt.from_hash h[:options] if h[:options]
-      @options = opt
+      @options = h[:options].map { |opt|
+        option = ProductOption.new
+        option.from_hash opt
+        option
+      }
       @parent_product = h[:parent_product]
       @prices = h[:prices]
       @related_product = h[:related_product]
@@ -81,12 +83,9 @@ module Storm
     end
 
     # Returns information about a product's pricing and options
-    #
-    # @param options [Hash] optional keys:
-    #  :alias [String] product alias
-    #  :code [String] a valid product info
-    def details(options)
-      data = Storm::Base::SODServer.remote_call '/Product/details', options
+    def details
+      data = Storm::Base::SODServer.remote_call '/Product/details',
+                                                :code => @code
       self.from_hash data
     end
 
@@ -114,7 +113,7 @@ module Storm
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
     #                Product objects)
-    def self.list(options)
+    def self.list(options={})
       Storm::Base::SODServer.remote_list '/Product/list', options do |i|
         prd = Product.new
         prd.from_hash i
