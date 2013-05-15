@@ -62,7 +62,7 @@ module Storm
         # @param record [Record] a record object
         # @param region [String]
         # @param region_id [Int]
-        def self.update(rdata, record, region, record_id)
+        def self.update(rdata, record, region, region_id)
           param = {}
           param[:rdata] = rdata
           param[:record_id] = record.uniq_id
