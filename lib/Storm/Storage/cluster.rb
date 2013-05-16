@@ -32,7 +32,7 @@ module Storm
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                Cluster objects)
-      def self.list(options)
+      def self.list(options={})
         Storm::Base::SODServer.remote_list \
                   '/Storage/Block/Cluster/list', options do |i|
           cluster = Cluster.new

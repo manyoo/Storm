@@ -89,7 +89,7 @@ module Storm
         options[:uniq_id] = options[:server].uniq_id
         options.delete :server
       end
-      Storm::Base::SODServer.remote_list '/Notifications/current', param do |i|
+      Storm::Base::SODServer.remote_list '/Notifications/current', options do |i|
         notification = Notification.new
         notification.from_hash i
         notification

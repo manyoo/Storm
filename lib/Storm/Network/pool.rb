@@ -34,8 +34,13 @@ module Storm
       def from_hash(h)
         self.uniq_id = h[:id]
         @account = h[:accnt]
-        @assignments = Assignment.new
-        @assignments.from_hash h[:assignments]
+        if h[:assignments]
+          @assignments = h[:assignments].map do |as|
+            assign = Assignment.new
+            assign.from_hash as
+            assign
+          end
+        end
         @server = Storm::Server.new
         @server.uniq_id = h[:uniq_id]
         @zone = Storm::Network::Zone.new

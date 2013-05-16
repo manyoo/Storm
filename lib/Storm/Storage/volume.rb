@@ -14,7 +14,7 @@ module Storm
 
       def from_hash(h)
         super
-        @attached_to = h[:attached_to]
+        @attached_to = h[:attachedTo]
         @cross_attach = h[:cross_attach].to_i == 0 ? false : true
         @domain = h[:domain]
         @label = h[:label]
@@ -103,7 +103,7 @@ module Storm
           options[:attached_to] = options[:attached_to].uniq_id
         end
         Storm::Base::SODServer.remote_list \
-                      '/Storage/Block/Volume/list', param do |i|
+                      '/Storage/Block/Volume/list', options do |i|
           vol = Volume.new
           vol.from_hash i
           vol

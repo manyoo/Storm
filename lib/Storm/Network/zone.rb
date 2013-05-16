@@ -42,7 +42,7 @@ module Storm
 
       # Get details of a the current zone
       def details
-        data = Storm::Base::SODServer.remote_call '/Netowrk/Zone/details',
+        data = Storm::Base::SODServer.remote_call '/Network/Zone/details',
                                                   :id => self.uniq_id
         self.from_hash data
       end

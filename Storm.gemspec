@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = ["ericsyw@gmail.com"]
   s.homepage    = ""
   s.summary     = %q{A Ruby client library for the Storm On Demand Cloud API.}
-  s.description = %q{TODO: Write a gem description}
+  s.description = %q{A Ruby client library for the Storm On Demand Cloud API.}
 
   s.rubyforge_project = "Storm"
 

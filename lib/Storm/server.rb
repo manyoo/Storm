@@ -237,7 +237,7 @@ module Storm
     # @param config [Config] a Config object
     # @param options [Hash] optional keys:
     #  :skip_fs_resize [Bool] whether skip filesystem resizing
-    def resize(config, new_size, options={})
+    def resize(config, options={})
       param = {
         :config_id => config.uniq_id,
         :uniq_id => self.uniq_id

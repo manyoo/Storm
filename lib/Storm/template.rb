@@ -12,7 +12,7 @@ module Storm
 
     def from_hash(h)
       super
-      @deprecated = h[:deprecated] == 0 ? false : true
+      @deprecated = h[:deprecated].to_i == 0 ? false : true
       @description = h[:description]
       @manage_level = h[:manage_level]
       @name = h[:name]

@@ -23,14 +23,16 @@ module Storm
       #
       # @param server [Server] the specified server
       # @param ip_count [Int] ip count
-      # @param reboot [Bool] if true, the server will be stopped, configured
+      # @param options [Hash] optional keys:
+      # :reboot [Bool] if true, the server will be stopped, configured
       #                      the new IPs and then be rebooted
       # @return [String] a result message
-      def self.add(server, ip_count, reboot=false)
-        param = {}
-        param[:uniq_id] = server.uniq_id
-        param[:ip_count] = ip_count
-        param[:reboot] = reboot ? 1 : 0
+      def self.add(server, ip_count, options={})
+        param = {
+          :uniq_id => server.uniq_id,
+          :ip_count => ip_count
+          }.merge options
+        param[:reboot] = param[:reboot] ? 1 : 0
         data = Storm::Base::SODServer.remote_call '/Network/IP/add', param
         data[:adding]
       end
