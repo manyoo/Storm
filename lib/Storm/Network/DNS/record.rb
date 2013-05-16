@@ -106,10 +106,12 @@ module Storm
           @prio = h[:prio]
           @rdata = h[:rdata]
           @refresh_interval = h[:refreshInterval]
-          @region_overrides = h[:regionOverrides].map do |r|
-            region = RecordRegion.new
-            region.from_hash r
-            region
+          if h[:region_overrides]
+            @region_overrides = h[:regionOverrides].map do |r|
+              region = RecordRegion.new
+              region.from_hash r
+              region
+            end
           end
           @retry = h[:retry]
           @serial = h[:serial]

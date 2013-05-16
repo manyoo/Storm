@@ -52,17 +52,21 @@ module Storm
         super
         @capabilities = h[:capabilities]
         @name = h[:name]
-        @nodes = h[:nodes].map do |n|
-          node = Storm::Server.new
-          node.from_hash n
-          node
+        if h[:nodes]
+          @nodes = h[:nodes].map do |n|
+            node = Storm::Server.new
+            node.from_hash n
+            node
+          end
         end
         @region = Storm::Network::ZoneRegion.new
         @region.uniq_id = h[:region_id]
-        @services = h[:services].map do |s|
-          service = Storm::Network::Service.new
-          service.from_hash s
-          service
+        if h[:services]
+          @services = h[:services].map do |s|
+            service = Storm::Network::Service.new
+            service.from_hash s
+            service
+          end
         end
         @session_persistence = h[:session_persistence].to_i == 0 ? false : true
         @ssl_includes = h[:ssl_includes].to_i == 0 ? false : true
@@ -238,7 +242,9 @@ module Storm
       #  :strategy [String] strategy name
       def update(options={})
         param = { :uniq_id => self.uniq_id }.merge options
-        param[:services] = param[:services].map { |s| s.to_hash }
+        if param[:services]
+          param[:services] = param[:services].map { |s| s.to_hash }
+        end
         param[:session_persistence] = param[:session_persistence] ? 1 : 0
         param[:ssl_includes] = param[:ssl_includes] ? 1 : 0
         param[:ssl_termination] = param[:ssl_termination] ? 1 : 0

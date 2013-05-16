@@ -13,18 +13,22 @@ module Storm
 
       def from_hash(h)
         super
-        @attached = h[:attached].map do |s|
-          server = Storm::Server.new
-          server.from_hash s
-          server
+        if h[:attached]
+          @attached = h[:attached].map do |s|
+            server = Storm::Server.new
+            server.from_hash s
+            server
+          end
         end
         @name = h[:name]
         @region = Storm::Network::ZoneRegion.new
         @region.from_hash h[:region]
-        @unattached = h[:unattached].map do |s|
-          server = Storm::Server.new
-          server.from_hash s
-          server
+        if h[:unattached]
+          @unattached = h[:unattached].map do |s|
+            server = Storm::Server.new
+            server.from_hash s
+            server
+          end
         end
       end
     end

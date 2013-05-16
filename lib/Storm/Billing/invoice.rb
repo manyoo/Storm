@@ -21,15 +21,19 @@ module Storm
         @bill_date = self.get_datetime h, :bill_date
         @due = h[:due]
         @end_date = self.get_datetime h, :end_date
-        @lineitem_groups = h[:lineitem_groups].map do |group|
-          bg = BillGroup.new
-          bg.from_hash group
-          bg
+        if h[:lineitem_groups]
+          @lineitem_groups = h[:lineitem_groups].map do |group|
+            bg = BillGroup.new
+            bg.from_hash group
+            bg
+          end
         end
-        @payments = h[:payments].map do |p|
-          pm = Payment.new
-          pm.from_hash p
-          pm
+        if h[:payments]
+          @payments = h[:payments].map do |p|
+            pm = Payment.new
+            pm.from_hash p
+            pm
+          end
         end
         @start_date = self.get_datetime h, :start_date
         @status = h[:status]

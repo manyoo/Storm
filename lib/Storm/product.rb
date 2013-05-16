@@ -71,11 +71,13 @@ module Storm
       @default_price = h[:default_price]
       @description = h[:description]
       @features = h[:features]
-      @options = h[:options].map { |opt|
-        option = ProductOption.new
-        option.from_hash opt
-        option
-      }
+      if h[:options]
+        @options = h[:options].map { |opt|
+          option = ProductOption.new
+          option.from_hash opt
+          option
+        }
+      end
       @parent_product = h[:parent_product]
       @prices = h[:prices]
       @related_product = h[:related_product]

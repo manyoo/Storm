@@ -101,10 +101,12 @@ module Storm
         @secid = h[:secid]
         @status = h[:status]
         @subject = h[:subject]
-        @transactions = h[:transactions].map do |t|
-          tran = Transaction.new
-          tran.from_hash t
-          tran
+        if h[:transactions]
+          @transactions = h[:transactions].map do |t|
+            tran = Transaction.new
+            tran.from_hash t
+            tran
+          end
         end
         @type = h[:type]
       end
