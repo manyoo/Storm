@@ -2,7 +2,7 @@ require 'Storm/Base/model'
 require 'Storm/Base/sodserver'
 
 module Storm
-  module Server
+  module InternalServer
     class VirtualDomain < Storm::Base::Model
       attr_accessor :active
       attr_accessor :active_status

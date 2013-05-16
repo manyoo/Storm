@@ -3,7 +3,7 @@ require 'Storm/Base/sodserver'
 require 'Storm/notification'
 
 module Storm
-  module Server
+  module InternalServer
     class Server < Storm::Base::Model
       attr_accessor :account
       attr_accessor :active

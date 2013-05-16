@@ -1,6 +1,6 @@
 require "Storm/Base/model"
 require "Storm/Base/sodserver"
-require "Storm/Server/server"
+require "Storm/server"
 
 module Storm
   module Network
@@ -53,7 +53,7 @@ module Storm
         @capabilities = h[:capabilities]
         @name = h[:name]
         @nodes = h[:nodes].map do |n|
-          node = Storm::Server::Server.new
+          node = Storm::Server.new
           node.from_hash n
           node
         end
@@ -180,7 +180,7 @@ module Storm
                     '/Network/LoadBalancer/possibleNodes',
                     :region => region
         data[:items].map { |i|
-          server = Storm::Server::Server.new
+          server = Storm::Server.new
           server.from_hash i
           server
         }

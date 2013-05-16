@@ -56,8 +56,6 @@ module Storm
         []
       end
 
-      private
-
       def long_datetime_str?(s)
         idx1 = s.index ':'
         if idx1

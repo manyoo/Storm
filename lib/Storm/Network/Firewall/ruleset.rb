@@ -1,6 +1,6 @@
 require "Storm/Base/model"
 require "Storm/Base/sodserver"
-require "Storm/Server/server"
+require "Storm/server"
 
 module Storm
   module Network
@@ -17,7 +17,7 @@ module Storm
           @destination_ips = h[:destination_ips]
           @rules = h[:rules]
           @ruleset = h[:ruleset]
-          @server = Storm::Server::Server.new
+          @server = Storm::Server.new
           @server.uniq_id = h[:uniq_id]
         end
 

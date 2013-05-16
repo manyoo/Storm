@@ -1,6 +1,6 @@
 require "Storm/Base/model"
 require "Storm/Base/sodserver"
-require "Storm/Server/server"
+require "Storm/server"
 require "Storm/Network/zone"
 
 module Storm
@@ -14,7 +14,7 @@ module Storm
       def from_hash(h)
         super
         @attached = h[:attached].map do |s|
-          server = Storm::Server::Server.new
+          server = Storm::Server.new
           server.from_hash s
           server
         end
@@ -22,7 +22,7 @@ module Storm
         @region = Storm::Network::ZoneRegion.new
         @region.from_hash h[:region]
         @unattached = h[:unattached].map do |s|
-          server = Storm::Server::Server.new
+          server = Storm::Server.new
           server.from_hash s
           server
         end

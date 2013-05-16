@@ -1,6 +1,6 @@
 require "Storm/Base/model"
 require "Storm/Base/sodserver"
-require "Storm/Server/server"
+require "Storm/server"
 require "Storm/Network/zone"
 
 module Storm
@@ -36,7 +36,7 @@ module Storm
         @account = h[:accnt]
         @assignments = Assignment.new
         @assignments.from_hash h[:assignments]
-        @server = Storm::Server::Server.new
+        @server = Storm::Server.new
         @server.uniq_id = h[:uniq_id]
         @zone = Storm::Network::Zone.new
         @zone.uniq_id = h[:zone_id]
