@@ -5,6 +5,7 @@ require "Storm/Network/zone"
 
 module Storm
   module Network
+    # Helper class defines service data in a LoadBalancer object
     class Service < Storm::Base::Model
       attr_accessor :dest_port
       attr_accessor :protocol
@@ -25,6 +26,7 @@ module Storm
       end
     end
 
+    # Helper class defines strategy data in a LoadBalancer object
     class Strategy < Storm::Base::Model
       attr_accessor :description
       attr_accessor :name
@@ -37,6 +39,8 @@ module Storm
       end
     end
 
+    # This class defines APIs that provide access for creating, adjusting,
+    # and removing load balancers from an account.
     class LoadBalancer < Storm::Base::Model
       attr_accessor :capabilities
       attr_accessor :name
@@ -117,13 +121,13 @@ module Storm
       # @param services [Array] an array of service objects
       # @param strategy [String]
       # @param options [Hash] optional keys:
-      #  :nodes [Array] an array of node IPs
-      #  :region [Int] region id
-      #  :session_persistence [Bool]
-      #  :ssl_cert [String] ssl certificate string
-      #  :ssl_includes [Bool]
-      #  :ssl_int [String] ssl public certificate string
-      #  :ssl_key [String] a private key string
+      #  :nodes [Array] an array of node IPs,
+      #  :region [Int] region id,
+      #  :session_persistence [Bool],
+      #  :ssl_cert [String] ssl certificate string,
+      #  :ssl_includes [Bool],
+      #  :ssl_int [String] ssl public certificate string,
+      #  :ssl_key [String] a private key string,
       #  :ssl_termination [Bool]
       # @return [LoadBalancer] a new LoadBalancer object
       def self.create(name, services, strategy, options={})
@@ -161,8 +165,8 @@ module Storm
       # Get a list of all LoadBalancers
       #
       # @param options [Hash] optional keys:
-      #  :page_num [Int] page number
-      #  :page_size [Int] page size
+      #  :page_num [Int] page number,
+      #  :page_size [Int] page size,
       #  :region [Int] region id
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
@@ -230,17 +234,17 @@ module Storm
       # Update an existing loadbalancer
       #
       # @param options [Hash] optional keys:
-      #  :name [String] loadbalancer name
-      #  :nodes [Array] an array of node IPs
-      #  :services [Array] an array of Service object
-      #  :nodes [Array] an array of node IPs
-      #  :region [Int] region id
-      #  :session_persistence [Bool]
-      #  :ssl_cert [String] ssl certificate string
-      #  :ssl_includes [Bool]
-      #  :ssl_int [String] ssl public certificate string
-      #  :ssl_key [String] a private key string
-      #  :ssl_termination [Bool]
+      #  :name [String] loadbalancer name,
+      #  :nodes [Array] an array of node IPs,
+      #  :services [Array] an array of Service object,
+      #  :nodes [Array] an array of node IPs,
+      #  :region [Int] region id,
+      #  :session_persistence [Bool],
+      #  :ssl_cert [String] ssl certificate string,
+      #  :ssl_includes [Bool],
+      #  :ssl_int [String] ssl public certificate string,
+      #  :ssl_key [String] a private key string,
+      #  :ssl_termination [Bool],
       #  :strategy [String] strategy name
       def update(options={})
         param = { :uniq_id => @uniq_id }.merge options

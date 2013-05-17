@@ -3,6 +3,7 @@ require "Storm/Base/sodserver"
 module Storm
   module Network
     module DNS
+      # This module defines methods to manage Reverse DNS
       module Reverse
         # Remove a reverse DNS record
         #

@@ -4,6 +4,7 @@ require 'Storm/notification'
 
 module Storm
   module InternalServer
+    # Class for managing servers. This is for internal use.
     class Server < Storm::Base::Model
       attr_accessor :account
       attr_accessor :active
@@ -52,8 +53,8 @@ module Storm
       # @param domain [String] domain name
       # @param password [String] a password of 7-30 characters
       # @param options [Hash] optional keys:
-      #  :config [Config] an optional Config object
-      #  :p_count [Int] a positive integer
+      #  :config [Config] an optional Config object,
+      #  :p_count [Int] a positive integer,
       #  :zone [Zone] the zone you want to clone
       # @return [Server] the newly created Server object
       def clone(domain, password, options={})
@@ -84,9 +85,9 @@ module Storm
       # @param type [String] the product code for the provisioned server to
       #                      create
       # @param options [Hash] optional keys:
-      #  :backup [Backup] an optional Backup object
-      #  :image [Image] you can specify a user-created image object
-      #  :public_ssh_key [String] optional public ssh key you want added
+      #  :backup [Backup] an optional Backup object,
+      #  :image [Image] you can specify a user-created image object,
+      #  :public_ssh_key [String] optional public ssh key you want added,
       #  :zone [Zone] the zone you wish to deploy the server in
       # @return [Server] a newly created Server object
       def self.create(domain, features, password, type, options={})
@@ -134,7 +135,7 @@ module Storm
       # Get a list of notifications for a specific server
       #
       # @param options [Hash] optional keys:
-      #  :page_num [Int] a positive number of page number
+      #  :page_num [Int] a positive number of page number,
       #  :page_size [Int] a positive number of page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
@@ -153,8 +154,8 @@ module Storm
       # @param options [Hash] optional keys:
       #  :category [String] service category, valid options: Dedicated,
       #                     Provisioned, LoadBalancer, HPBS
-      #  :page_num [Int] page number
-      #  :page_size [Int] page size
+      #  :page_num [Int] page number,
+      #  :page_size [Int] page size,
       #  :type [String] a valid subaccnt type descriptor
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
@@ -218,7 +219,7 @@ module Storm
       # Update the details of the server
       #
       # @param options [Hash] optional keys:
-      #  :domain [String] a fully-qualified domain name
+      #  :domain [String] a fully-qualified domain name,
       #  :features [Hash] a hash of features
       def update(options={})
         param = { :uniq_id => @uniq_id }.merge options

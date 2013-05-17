@@ -60,6 +60,7 @@ module Storm
       end
     end
 
+    # This class defines API methods for creating and fetching support tickets.
     class Ticket < Storm::Base::Model
       attr_accessor :account
       attr_accessor :authenticated
@@ -138,7 +139,7 @@ module Storm
       # @param time [Datetime]
       # @param rating [String] 'good' or 'poor'
       # @param options [Hash] optional keys:
-      #  :attributes [Array] an array of strings
+      #  :attributes [Array] an array of strings,
       #  :comment [String]
       # @return [Transaction] a new Transaction object
       def add_transaction_feedback(time, rating, options={})
@@ -208,8 +209,8 @@ module Storm
       # Get a list of tickets
       #
       # @param options [Hash] optional keys:
-      #  :page_num [Int] page number
-      #  :page_size [Int] page size
+      #  :page_num [Int] page number,
+      #  :page_size [Int] page size,
       #  :status [String] one of 'open', 'recent', 'closed', 'archived'
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of

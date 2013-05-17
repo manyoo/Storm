@@ -3,6 +3,8 @@ require "Storm/Base/sodserver"
 
 module Storm
   module Storage
+    # This class defines block storage volumes and provides APIs for managing
+    # and attaching to/detaching from servers
     class Volume < Storm::Base::Model
       attr_accessor :attached_to
       attr_accessor :cross_attach
@@ -40,8 +42,8 @@ module Storm
       # @param domain [String] domain name
       # @param size [Int] volume size
       # @param options [Hash] optional keys:
-      #  :attach [String] a string identifier
-      #  :cross_attach [Bool] if enabling cross_attach
+      #  :attach [String] a string identifier,
+      #  :cross_attach [Bool] if enabling cross_attach,
       #  :zone [Zone] zone object
       # @return [Volume] a new volume object
       def self.create(domain, size, options={})
@@ -93,8 +95,8 @@ module Storm
       # Get a paginated list of block storage volumes for your account
       #
       # @param options [Hash] optional keys:
-      #  :attached_to [Server] a server object
-      #  :page_num [Int] page number
+      #  :attached_to [Server] a server object,
+      #  :page_num [Int] page number,
       #  :page_size [Int] page size
       # @return [hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
@@ -125,7 +127,7 @@ module Storm
       # supported
       #
       # @param options [Hash] optional keys:
-      #  :domain [String] domain name
+      #  :domain [String] domain name,
       #  :cross_attach [Bool] if enabling cross_attach
       def update(options={})
         param = { :uniq_id => @uniq_id }.merge options

@@ -2,6 +2,7 @@ require "Storm/Base/sodserver"
 
 module Storm
   module Utilities
+    # This module defines basic methods for getting the version and state of the api.
     module Info
       # This method can be used as a basic check to see if communication with
       # the api is possible

@@ -2,6 +2,8 @@ require "Storm/Base/model"
 require "Storm/Base/sodserver"
 
 module Storm
+  # Templates are OS images created and maintained by LiquidWeb.
+  # This class defines APIs for remote interaction with those images.
   class Template < Storm::Base::Model
     attr_accessor :deprecated
     attr_accessor :description
@@ -43,7 +45,7 @@ module Storm
     # Get a list of useable templates
     #
     # @param options [Hash] optional keys:
-    #  :page_num [Int] page number
+    #  :page_num [Int] page number,
     #  :page_size [Int] page size
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of

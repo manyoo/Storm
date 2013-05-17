@@ -2,6 +2,7 @@ require "Storm/Base/model"
 require "Storm/Base/sodserver"
 
 module Storm
+  # This class defines API methods for managing backups.
   class Backup < Storm::Base::Model
     attr_accessor :account
     attr_accessor :features
@@ -42,8 +43,8 @@ module Storm
     # Get a paginated list of backups for a particular server
     #
     # @param options [Hash] optional keys:
-    #  :server [Server] an existing server object
-    #  :page_num [Int] page number
+    #  :server [Server] an existing server object,
+    #  :page_num [Int] page number,
     #  :page_size [Int] page size
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of

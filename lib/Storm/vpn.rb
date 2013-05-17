@@ -2,6 +2,7 @@ require "Storm/Base/model"
 require "Storm/Base/sodserver"
 
 module Storm
+  # This class defines methods to manage the VPN service of an account
   class VPN < Storm::Base::Model
     attr_accessor :active
     attr_accessor :active_status
@@ -57,7 +58,7 @@ module Storm
     # Lists the authorized VPN users for a given account
     #
     # @param options [Hash] optional keys:
-    #  :page_num [Int] page number
+    #  :page_num [Int] page number,
     #  :page_size [Int] page size
     # @return [Hash]  a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
@@ -74,7 +75,7 @@ module Storm
     # Update the features of a VPN service
     #
     # @param options [Hash] optional keys:
-    #  :domain [String]
+    #  :domain [String],
     #  :features [Hash]
     def update(options={})
       param = { :uniq_id => @uniq_id }.merge options

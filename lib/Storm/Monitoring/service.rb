@@ -3,6 +3,9 @@ require "Storm/Base/sodserver"
 
 module Storm
   module Monitoring
+    # This class defines service monitoring status and APIs for remotely
+    # querying service status data for a server, as well as managing monitoring
+    # settings.
     class Service < Storm::Base::Model
       attr_accessor :can_monitor
       attr_accessor :enabled
@@ -50,7 +53,7 @@ module Storm
       #
       # @param server [Server] the specified server
       # @param options [Hash] optional keys:
-      #   :enabled [Bool] if it's enabled
+      #   :enabled [Bool] if it's enabled,
       #   :services [Array] an array of strings
       # @return [Service] a new Service object
       def self.update(server, options={})

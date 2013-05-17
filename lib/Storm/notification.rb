@@ -12,6 +12,10 @@ module Storm
     end
   end
 
+  # Sometimes we want to notify the user about a particular incident,
+  # such as service monitoring alerts, load monitoring alerts, background
+  # process progress, etc. This class defines the API for accessing to those
+  # alerts.
   class Notification < Storm::Base::Model
     attr_accessor :alerts
     attr_accessor :category
@@ -50,11 +54,11 @@ module Storm
     # Get a list of all notifications for an account or server
     #
     # @param options [Hash] optional keys:
-    #  :category [String] category name
-    #  :page_num [Int] page number
-    #  :page_size [Int] page size
-    #  :resolved [Bool] if the Notification is resolved
-    #  :system [String] system name
+    #  :category [String] category name,
+    #  :page_num [Int] page number,
+    #  :page_size [Int] page size,
+    #  :resolved [Bool] if the Notification is resolved,
+    #  :system [String] system name,
     #  :server [Server] a server object
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
@@ -75,10 +79,10 @@ module Storm
     # Get a list of unresolved notifcations for an account or server
     #
     # @param options [Hash] optional keys:
-    #  :category [String] category name
-    #  :page_num [Int] page number
-    #  :page_size [Int] page size
-    #  :system [String] system name
+    #  :category [String] category name,
+    #  :page_num [Int] page number,
+    #  :page_size [Int] page size,
+    #  :system [String] system name,
     #  :server [Server] a server object
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
@@ -98,8 +102,8 @@ module Storm
     # Gets information about a specific notification
     #
     # @param options [Hash] optional keys:
-    #  :system [String] system name
-    #  :system_identifier [String] system identifier
+    #  :system [String] system name,
+    #  :system_identifier [String] system identifier,
     #  :limit [Int] a non-negitive integer
     # @return [Notification] a new Notification object
     def self.details(options={})

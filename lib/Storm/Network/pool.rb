@@ -5,6 +5,7 @@ require "Storm/Network/zone"
 
 module Storm
   module Network
+    # This class defines network assignments in a pool
     class Assignment < Storm::Base::Model
       attr_accessor :begin_range
       attr_accessor :broadcast
@@ -26,6 +27,7 @@ module Storm
       end
     end
 
+    # This class defines API methods that manage IP pools
     class Pool < Storm::Base::Model
       attr_accessor :account
       attr_accessor :assignments
@@ -108,9 +110,9 @@ module Storm
       # Get a list of network assignments for a particular IP pool
       #
       # @param options [Hash] optional keys:
-      #  :zone [Zone] a zone object
-      #  :alsowith [String/Array] one or an array of strings
-      #  :page_num [Int] page number
+      #  :zone [Zone] a zone object,
+      #  :alsowith [String/Array] one or an array of strings,
+      #  :page_num [Int] page number,
       #  :page_size [Int] page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
@@ -130,8 +132,8 @@ module Storm
       # Update the IP Pool
       #
       # @param options [Hash] optional keys:
-      #  :add_ips [Array] an array of IPs to add
-      #  :remove_ips [Array] an array of IPs to remove
+      #  :add_ips [Array] an array of IPs to add,
+      #  :remove_ips [Array] an array of IPs to remove,
       #  :new_ips [Int] number of new IPs
       def update(options={})
         param = { :id => @id, :uniq_id => @uniq_id }.merge options

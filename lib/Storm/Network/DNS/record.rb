@@ -5,6 +5,7 @@ require "Storm/Network/DNS/zone"
 module Storm
   module Network
     module DNS
+      # This class defines region data used in a DNS record.
       class RecordRegion < Storm::Base::Model
         attr_accessor :rdata
         attr_accessor :region_name
@@ -74,6 +75,7 @@ module Storm
         end
       end
 
+      # This class defines DNS Record and APIs managing them
       class Record < Storm::Base::Model
         attr_accessor :admin_email
         attr_accessor :expiry
@@ -133,7 +135,7 @@ module Storm
         #                      'PTR', 'SRV', 'AAAA'
         # @param zone [Zone]
         # @param options [Hash] optional keys:
-        #   :prio [Int]
+        #   :prio [Int],
         #   :ttl [Int]
         # @return [Record] a new Record object
         def self.create(name, rdata, region_overrides, type, zone, options={})
@@ -171,7 +173,7 @@ module Storm
         #
         # @param zone [Zone]
         # @param options [Hash] optional keys:
-        #  :page_num [Int] page number
+        #  :page_num [Int] page number,
         #  :page_size [Int] page size
         # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
         #                :page_size, :page_total and :items (an array of
@@ -189,9 +191,9 @@ module Storm
         # Update a resource record
         #
         # @param options [Hash] optional keys:
-        # :prio [Int]
-        # :rdata [String]
-        # :ttl [Int]
+        #  :prio [Int],
+        #  :rdata [String],
+        #  :ttl [Int]
         # either :rdata or :ttl must be provided
         def update(options={})
           param = { :id => @id }.merge options

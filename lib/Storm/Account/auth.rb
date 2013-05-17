@@ -2,27 +2,44 @@ require "Storm/Base/sodserver"
 
 module Storm
   module Account
+    # This Module contains methods to update and use an account's
+    # authentication credentials
     module Auth
       @@username = nil
       @@password = nil
       @@token = nil
 
+      # Get the API account user name
+      #
+      # @return [String]
       def self.username
         @@username
       end
 
+      # Set the API account user name
+      #
+      # @param name [String]
       def self.username=(name)
         @@username = name
       end
 
+      # Get the API account password
+      #
+      # @return [String]
       def self.password
         @@password
       end
 
+      # Set the API account password
+      #
+      # @param pass [String]
       def self.password=(pass)
         @@password = pass
       end
 
+      # Get the current API token
+      #
+      # @return [String]
       def self.token_string
         @@token
       end

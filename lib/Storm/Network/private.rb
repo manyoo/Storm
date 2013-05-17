@@ -5,6 +5,7 @@ require "Storm/Network/zone"
 
 module Storm
   module Network
+    # Helper class for zone in private network
     class PrivateZone < Storm::Base::Model
       attr_accessor :attached
       attr_accessor :id
@@ -34,6 +35,9 @@ module Storm
       end
     end
 
+    # This class defines APIs methods for attaching and detaching
+    # a server to a private network, and for querying information about an
+    # existing private network.
     class Private
       # Attach a given server to your private network
       #

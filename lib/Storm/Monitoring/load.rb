@@ -3,6 +3,7 @@ require "Storm/Base/sodserver"
 
 module Storm
   module Monitoring
+    # This class defines basic system load
     class BasicLoad < Storm::Base::Model
       attr_accessor :percent
       attr_accessor :total
@@ -15,6 +16,7 @@ module Storm
       end
     end
 
+    # This class defines average system load in different time slice
     class AverageLoad < Storm::Base::Model
       attr_accessor :fifteen
       attr_accessor :five
@@ -27,6 +29,7 @@ module Storm
       end
     end
 
+    # This class defines system memory load
     class MemoryLoad < Storm::Base::Model
       attr_accessor :physical
       attr_accessor :virtual
@@ -39,6 +42,7 @@ module Storm
       end
     end
 
+    # This class defines system process load
     class ProcessLoad < Storm::Base::Model
       attr_accessor :running
       attr_accessor :total
@@ -49,6 +53,8 @@ module Storm
       end
     end
 
+    # This class defines system load properties and APIs to get
+    # statistics
     class Load < Storm::Base::Model
       attr_accessor :disk
       attr_accessor :domain
@@ -74,24 +80,24 @@ module Storm
       #
       # @param server [Server] the specified server
       # @param stat [String] options:
-      #                   'load1'      - 1 minute load average
-      #                   'load5'      - 5 minute load average
-      #                   'load15'     - 15 minute load average
-      #                   'rproc'      - running process count
-      #                   'tproc'      - total process count
-      #                   'pmem'       - physical memory usage
-      #                   'smem'       - swap (virtual) memory usage
-      #                   'diskroot'   - /root volume usage
-      #                   'diskbackup' - /backup volume usage
-      #                   'diskhome'   - /home volume usage
-      #                   'disktmp'    - /tmp volume usage
-      #                   'diskusr'    - /usr volume usage
+      #                   'load1'      - 1 minute load average,
+      #                   'load5'      - 5 minute load average,
+      #                   'load15'     - 15 minute load average,
+      #                   'rproc'      - running process count,
+      #                   'tproc'      - total process count,
+      #                   'pmem'       - physical memory usage,
+      #                   'smem'       - swap (virtual) memory usage,
+      #                   'diskroot'   - /root volume usage,
+      #                   'diskbackup' - /backup volume usage,
+      #                   'diskhome'   - /home volume usage,
+      #                   'disktmp'    - /tmp volume usage,
+      #                   'diskusr'    - /usr volume usage,
       #                   'diskvar'    - /var volume usage
       # @param options [Hash] optional keys:
       #   :duration [String] options:
-      #                   '6hour', '12hour', 'day', '3day', 'week', '2week'
-      #   :compact [Bool] if need compact image
-      #   :height [Int] image height
+      #              '6hour', '12hour', 'day', '3day', 'week', '2week',
+      #   :compact [Bool] if need compact image,
+      #   :height [Int] image height,
       #   :width [Int] image width
       # @return [Hash] a hash with keys: :content and :content_type
       def self.graph(server, stat, options={})

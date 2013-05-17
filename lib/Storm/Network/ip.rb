@@ -3,6 +3,8 @@ require "Storm/Base/sodserver"
 
 module Storm
   module Network
+    # This class defines methods for listing and manipulating the IPs
+    # assigned to a server
     class IPNetwork < Storm::Base::Model
       attr_accessor :broadcast
       attr_accessor :gateway
@@ -56,8 +58,8 @@ module Storm
       #
       # @param server [Server] the specified server
       # @param options [Hash] optional keys:
-      #  :alsowith [String] one or an array of strings
-      #  :page_num [Int] page number
+      #  :alsowith [String] one or an array of strings,
+      #  :page_num [Int] page number,
       #  :page_size [Int] page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
@@ -75,9 +77,9 @@ module Storm
       # particular account, optionally for a specific zone only.
       #
       # @param options [Hash] optional keys:
-      #   :include_pools [Bool]
-      #   :page_num [Int] page number
-      #   :page_size [Int] page size
+      #   :include_pools [Bool],
+      #   :page_num [Int] page number,
+      #   :page_size [Int] page size,
       #   :zone [Zone] zone
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
@@ -100,8 +102,8 @@ module Storm
       #
       # @param server [Server] the specified server
       # @param options [Hash] optional keys:
-      #  :alsowith [String] one or an array of strings
-      #  :page_num [Int] page number
+      #  :alsowith [String] one or an array of strings,
+      #  :page_num [Int] page number,
       #  :page_size [Int] page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of

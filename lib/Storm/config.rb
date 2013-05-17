@@ -2,6 +2,7 @@ require "Storm/Base/model"
 require "Storm/Base/sodserver"
 
 module Storm
+  # This class define server configuration and APIs for listing them
   class Config < Storm::Base::Model
     attr_accessor :active
     attr_accessor :available
@@ -58,9 +59,9 @@ module Storm
     # Get a list of available server configurations
     #
     # @param options [Hash] optional keys:
-    #  :available [Bool] if the config is available
-    #  :category [String] config category ('storm' by default)
-    #  :page_num [Int] page number
+    #  :available [Bool] if the config is available,
+    #  :category [String] config category ('storm' by default),
+    #  :page_num [Int] page number,
     #  :page_size [Int] page size
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of

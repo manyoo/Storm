@@ -4,6 +4,8 @@ require "Storm/Base/sodserver"
 module Storm
   module Network
     module Firewall
+      # This class defines methods for manipulating the firewall of a storm
+      # server.
       class Firewall < Storm::Base::Model
         attr_accessor :allow
         attr_accessor :rules

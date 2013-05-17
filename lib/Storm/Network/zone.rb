@@ -23,6 +23,7 @@ module Storm
       end
     end
 
+    # This class defines APIs for listing network zones.
     class Zone < Storm::Base::Model
       attr_accessor :id
       attr_accessor :is_default
@@ -52,8 +53,8 @@ module Storm
       # Get a list of Zones
       #
       # @param options [Hash] optional keys:
-      #  :page_num [Int] page number
-      #  :page_size [Int] page size
+      #  :page_num [Int] page number,
+      #  :page_size [Int] page size,
       #  :region [String] region name
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of

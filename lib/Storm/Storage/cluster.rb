@@ -1,18 +1,10 @@
 require "Storm/Base/model"
 require "Storm/Base/sodserver"
+require "Storm/Network/zone"
 
 module Storm
   module Storage
-    class Zone < Storm::Base::Model
-      attr_accessor :name
-      attr_accessor :id
-
-      def from_hash(h)
-        @id = h[:id]
-        @name = h[:name]
-      end
-    end
-
+    # This class defines APIs for listing block storage clusters
     class Cluster < Storm::Base::Model
       attr_accessor :description
       attr_accessor :id
@@ -21,7 +13,7 @@ module Storm
       def from_hash(h)
         @description = h[:description]
         @id = h[:id]
-        @zone = Zone.new
+        @zone = Storm::Network::Zone.new
         @zone.from_hash h[:zone]
       end
 
@@ -29,7 +21,7 @@ module Storm
       # the cluster is in.
       #
       # @param options [Hash] optional keys:
-      #  :page_num [Int] page number
+      #  :page_num [Int] page number,
       #  :page_size [Int] page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of

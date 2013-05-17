@@ -1,31 +1,9 @@
 require "Storm/Base/model"
 require "Storm/Base/sodserver"
 require "Storm/config"
+require "Storm/Network/zone"
 
 module Storm
-  class ServerZone < Storm::Base::Model
-    attr_accessor :id
-    attr_accessor :name
-    attr_accessor :region
-
-    def from_hash(h)
-      @id = h[:id]
-      @name = h[:name]
-      @region = ServerRegion.new
-      @region.from_hash h[:region]
-    end
-  end
-
-  class ServerRegion < Storm::Base::Model
-    attr_accessor :id
-    attr_accessor :name
-
-    def from_hash(h)
-      @id = h[:id]
-      @name = h[:name]
-    end
-  end
-
   class Status < Storm::Base::Model
     attr_accessor :detailed_status
     attr_accessor :progress
@@ -60,6 +38,8 @@ module Storm
     end
   end
 
+  # This class defines convenience methods for managing Storm servers in your
+  # account
   class Server < Storm::Base::Model
     attr_accessor :account
     attr_accessor :active
@@ -101,7 +81,7 @@ module Storm
       @template_description = h[:template_description]
       @type = h[:type]
       @uniq_id = h[:uniq_id]
-      @zone = ServerZone.new
+      @zone = Storm::Network::Zone.new
       @zone.from_hash h[:zone]
     end
 
@@ -137,19 +117,19 @@ module Storm
     # @param domain [String]
     # @param password [String]
     # @param options [Hash] optional keys:
-    # :antivirus [String],
-    # :backup_enabled [Bool],
-    # :backup [Backup] a Backup object,
-    # :backup_plan [String],
-    # :backup_quota [Int],
-    # :backup_size [Float],
-    # :bandwidth_quota [Int],
-    # :image [Image] an Image object,
-    # :ip_count [Int],
-    # :ms_sql [String],
-    # :public_ssh_key [String],
-    # :template [Template] a Template object
-    # :zone [ServerZone] a ServerZone object
+    #  :antivirus [String],
+    #  :backup_enabled [Bool],
+    #  :backup [Backup] a Backup object,
+    #  :backup_plan [String],
+    #  :backup_quota [Int],
+    #  :backup_size [Float],
+    #  :bandwidth_quota [Int],
+    #  :image [Image] an Image object,
+    #  :ip_count [Int],
+    #  :ms_sql [String],
+    #  :public_ssh_key [String],
+    #  :template [Template] a Template object,
+    #  :zone [ServerZone] a ServerZone object
     # @return [Server] a new Server object
     def self.create(config, domain, password, options={})
       param = {
@@ -210,7 +190,7 @@ module Storm
     # Get a list of servers, services, and devices on your account
     #
     # @param options [Hash] optional keys:
-    #  :page_num [Int] page number
+    #  :page_num [Int] page number,
     #  :page_size [Int] page size
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of

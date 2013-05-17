@@ -4,6 +4,7 @@ require "Storm/Base/sodserver"
 module Storm
   module Network
     module DNS
+      # This class defines basic zone data used when creating a new DNS zone
       class ZoneData < Storm::Base::Model
         attr_accessor :contact
         attr_accessor :ip
@@ -27,6 +28,9 @@ module Storm
         end
       end
 
+      # This class defines the API methods for creating and deleting
+      # zones from our DNS system, as well as getting information about what
+      # zones we are currently serving for you.
       class Zone < Storm::Base::Model
         attr_accessor :active
         attr_accessor :delegation_checked
@@ -56,8 +60,8 @@ module Storm
         #
         # @param name [String]
         # @param options [Hash] optional keys:
-        #  :region_support [Bool]
-        #  :register [Bool]
+        #  :region_support [Bool],
+        #  :register [Bool],
         #  :zone_data [ZoneData]
         # @return [Zone] a new Zone object
         def self.create(name, options={})
@@ -100,7 +104,7 @@ module Storm
         # Get a list of zones
         #
         # @param options [Hash] optional keys:
-        #  :page_num [Int] page number
+        #  :page_num [Int] page number,
         #  :page_size [Int] page size
         # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
         #                :page_size, :page_total and :items (an array of

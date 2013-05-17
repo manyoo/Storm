@@ -3,6 +3,8 @@ require 'Storm/Base/sodserver'
 
 module Storm
   module Billing
+    # This class defines methods for fetching the billing history of the
+    # logged in account
     class Invoice < Storm::Base::Model
       attr_accessor :account
       attr_accessor :bill_date
@@ -57,8 +59,8 @@ module Storm
       # created for one-off items like creating or cloning a server.
       #
       # @param options [Hash] optional keys:
-      #  page_num [Int] a positive integer for page number
-      #  page_size [Int] a positive integer for page size
+      #  :page_num [Int] a positive integer for page number,
+      #  :page_size [Int] a positive integer for page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
       #                Invoice objects)

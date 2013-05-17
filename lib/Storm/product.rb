@@ -2,6 +2,7 @@ require "Storm/Base/model"
 require "Storm/Base/sodserver"
 
 module Storm
+  # Helper class for product option data
   class ProductOption < Storm::Base::Model
     attr_accessor :automated
     attr_accessor :display_order
@@ -24,6 +25,7 @@ module Storm
     end
   end
 
+  # Helper class for product price data
   class ProductPrice < Storm::Base::Model
     attr_accessor :approved
     attr_accessor :balance
@@ -44,6 +46,7 @@ module Storm
     end
   end
 
+  # This class defines product information and APIs for getting products
   class Product < Storm::Base::Model
     attr_accessor :alias
     attr_accessor :capabilities
@@ -105,9 +108,9 @@ module Storm
     # or category depending on the arguments passed
     #
     # @param options [Hash] optional keys:
-    #  :category [String] product category
-    #  :page_num [Int] page number
-    #  :page_size [Int] page size
+    #  :category [String] product category,
+    #  :page_num [Int] page number,
+    #  :page_size [Int] page size,
     #  :series [String] product series
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of

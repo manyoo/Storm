@@ -3,6 +3,7 @@ require 'Storm/Base/sodserver'
 
 module Storm
   module Monitoring
+    # This Class defines basic speed in KB, MB and GB
     class BasicSpeed < Storm::Base::Model
       attr_accessor :byte
       attr_accessor :kilobyte
@@ -17,6 +18,7 @@ module Storm
       end
     end
 
+    # This class defines duplex speed in both direction
     class DuplexSpeed < Storm::Base::Model
       attr_accessor :both
       attr_accessor :in
@@ -32,6 +34,7 @@ module Storm
       end
     end
 
+    # This class defines average speeds within different time slice
     class AverageSpeed < Storm::Base::Model
       attr_accessor :day
       attr_accessor :hour
@@ -81,6 +84,8 @@ module Storm
       end
     end
 
+    # This class defines bandwidth usage properties and API methods for
+    # statistics
     class Bandwidth < Storm::Base::Model
       attr_accessor :actual
       attr_accessor :averages
@@ -107,9 +112,9 @@ module Storm
       #
       # @param server [Server] a specific server
       # @param options [Hash] optional keys:
-      #   :frequency [String] one of 'daily', 'weekly', 'monthly', 'yearly'
-      #   :height [Int] image height
-      #   :width [Int] image width
+      #   :frequency [String] one of 'daily', 'weekly', 'monthly', 'yearly',
+      #   :height [Int] image height,
+      #   :width [Int] image width,
       #   :small [Bool] whether need small image
       # @return [Hash] a hash with keys: :content and :content_type
       def self.graph(server, options={})

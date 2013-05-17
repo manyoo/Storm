@@ -3,6 +3,8 @@ require 'Storm/Base/sodserver'
 
 module Storm
   module InternalServer
+    # Class for managing API methods for interacting with add-on domains for
+    # shared servers
     class VirtualDomain < Storm::Base::Model
       attr_accessor :active
       attr_accessor :active_status
@@ -55,7 +57,7 @@ module Storm
       #
       # @param server [Server] an existing server object
       # @param options [Hash] optional keys:
-      #  :page_num [Int] page number
+      #  :page_num [Int] page number,
       #  :page_size [Int] page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of
@@ -73,7 +75,7 @@ module Storm
       # Lists the domains for in an account that are not linked to a server
       #
       # @param options [Hash] optional keys:
-      # :page_num [Int] page number
+      # :page_num [Int] page number,
       # :page_size [Int] page size
       # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
       #                :page_size, :page_total and :items (an array of

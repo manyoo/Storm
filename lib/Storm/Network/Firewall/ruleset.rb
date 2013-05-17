@@ -5,6 +5,8 @@ require "Storm/server"
 module Storm
   module Network
     module Firewall
+      # This class defines APIs that give you access to saving and querying
+      # your saved rulesets.
       class Ruleset < Storm::Base::Model
         attr_accessor :account
         attr_accessor :destination_ips
@@ -47,7 +49,7 @@ module Storm
         # by this account.
         #
         # @param options [Hash] optional keys:
-        #  :page_num [Int] page number
+        #  :page_num [Int] page number,
         #  :page_size [Int] page_size
         # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
         #                :page_size, :page_total and :items (an array of

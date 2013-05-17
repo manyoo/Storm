@@ -2,6 +2,8 @@ require 'date'
 
 module Storm
   module Base
+    # This is the base class for all Storm objects, this base class provide
+    # some basic helper functions
     class Model
 
       # Build up the object with data in a hash

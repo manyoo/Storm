@@ -4,6 +4,8 @@ require "Storm/Base/sodserver"
 module Storm
   module Network
     module DNS
+      # This class defines properties and API methods for listing registered
+      # domains and renewing those domains
       class Domain < Storm::Base::Model
         attr_accessor :admin_handle
         attr_accessor :bill_handle
@@ -34,7 +36,7 @@ module Storm
         # Returns the list of domain registrations for a given account.
         #
         # @param options [Hash] optional keys:
-        #  :page_num [Int] page number
+        #  :page_num [Int] page number,
         #  :page_size [Int] page size
         # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
         #                :page_size, :page_total and :items (an array of

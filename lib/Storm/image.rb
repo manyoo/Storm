@@ -2,6 +2,7 @@ require "Storm/Base/model"
 require "Storm/Base/sodserver"
 
 module Storm
+  # This class defines APIs to manage server images.
   class Image < Storm::Base::Model
     attr_accessor :account
     attr_accessor :features
@@ -61,7 +62,7 @@ module Storm
     # Get a paginated list of previously-created images for your account
     #
     # @param options [Hash] optional keys:
-    #  :page_num [Int] page number
+    #  :page_num [Int] page number,
     #  :page_size [Int] page size
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of

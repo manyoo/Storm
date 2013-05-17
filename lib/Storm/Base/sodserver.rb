@@ -9,7 +9,13 @@ module Storm
     STORM_BASE_URL = 'https://api.stormondemand.com'
     STORM_API_VERSION = 'v1'
 
+    # This is the class to manage network connection and JSON encode/decode
     class SODServer
+      # Call an API method with parameters
+      #
+      # @param path [String] the API method path
+      # @param parameter [Hash] optional parameters
+      # @return [Hash]
       def self.remote_call(path, parameter={})
         real_path = "/#{STORM_API_VERSION}#{path}"
         param = {}
@@ -32,6 +38,11 @@ module Storm
         end
       end
 
+      # Call an API that return a list of items
+      #
+      # @param path [String] API method path
+      # @param parameter [Hash] optional parameter
+      # @return [Hash]
       def self.remote_list(path, parameter={})
         real_path = "/#{STORM_API_VERSION}#{path}"
         param = {}
@@ -61,6 +72,9 @@ module Storm
         end
       end
 
+      # A helper function to build the Authentication HTTP Header
+      #
+      # @return [String]
       def self.build_auth_header
         username = Storm::Account::Auth.username
         password = Storm::Account::Auth.password
