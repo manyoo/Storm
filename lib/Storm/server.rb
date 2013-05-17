@@ -4,11 +4,12 @@ require "Storm/config"
 
 module Storm
   class ServerZone < Storm::Base::Model
+    attr_accessor :id
     attr_accessor :name
     attr_accessor :region
 
     def from_hash(h)
-      super
+      @id = h[:id]
       @name = h[:name]
       @region = ServerRegion.new
       @region.from_hash h[:region]
@@ -16,10 +17,11 @@ module Storm
   end
 
   class ServerRegion < Storm::Base::Model
+    attr_accessor :id
     attr_accessor :name
 
     def from_hash(h)
-      super
+      @id = h[:id]
       @name = h[:name]
     end
   end
@@ -76,10 +78,10 @@ module Storm
     attr_accessor :template
     attr_accessor :template_description
     attr_accessor :type
+    attr_accessor :uniq_id
     attr_accessor :zone
 
     def from_hash(h)
-      super
       @account = h[:accnt]
       @active = h[:active].to_i == 1 ? true : false
       @backup_enabled = h[:backup_enabled].to_i == 1 ? true : false
@@ -89,7 +91,7 @@ module Storm
       @bandwidth_quota = h[:bandwidth_quota]
       @config_description = h[:config_description]
       @config = Storm::Config.new
-      @config.uniq_id = h[:config_id]
+      @config.id = h[:config_id]
       @create_date = self.get_datetime h, :create_date
       @domain = h[:domain]
       @ip = h[:ip]
@@ -98,6 +100,7 @@ module Storm
       @template = h[:template]
       @template_description = h[:template_description]
       @type = h[:type]
+      @uniq_id = h[:uniq_id]
       @zone = ServerZone.new
       @zone.from_hash h[:zone]
     end
@@ -115,13 +118,13 @@ module Storm
       param = {
         :domain => domain,
         :password => password,
-        :uniq_id => self.uniq_id
+        :uniq_id => @uniq_id
       }.merge options
       if param[:config]
-        param[:config_id] = param[:config].uniq_id
+        param[:config_id] = param[:config].id
         param.delete :config
       end
-      param[:zone] = param[:zone].uniq_id if param[:zone]
+      param[:zone] = param[:zone].id if param[:zone]
       data = Storm::Base::SODServer.remote_call '/Storm/Server/clone', param
       server = Server.new
       server.from_hash data
@@ -150,21 +153,21 @@ module Storm
     # @return [Server] a new Server object
     def self.create(config, domain, password, options={})
       param = {
-        :config_id => config.uniq_id,
+        :config_id => config.id,
         :domain => domain,
         :password => password
       }.merge options
       param[:backup_enabled] = param[:backup_enabled] ? 1 : 0
       if param[:backup]
-        param[:backup_id] = param[:backup].uniq_id
+        param[:backup_id] = param[:backup].id
         param.delete :backup
       end
       if param[:image]
-        param[:image_id] = param[:image].uniq_id
+        param[:image_id] = param[:image].id
         param.delete :image
       end
       param[:template] = param[:template].name if param[:template]
-      param[:zone] = param[:zone].uniq_id if param[:zone]
+      param[:zone] = param[:zone].id if param[:zone]
       data = Storm::Base::SODServer.remote_call '/Storm/Server/create', param
       server = Server.new
       server.from_hash data
@@ -176,14 +179,14 @@ module Storm
     # @return [String] a result message
     def destroy
       data = Storm::Base::SODServer.remote_call '/Storm/Server/destroy',
-                                                :uniq_id => self.uniq_id
+                                                :uniq_id => @uniq_id
       data[:destroyed]
     end
 
     # Get details information for the server
     def details
       data = Storm::Base::SODServer.remote_call '/Storm/Server/details',
-                                                :uniq_id => self.uniq_id
+                                                :uniq_id => @uniq_id
       self.from_hash data
     end
 
@@ -196,7 +199,7 @@ module Storm
     #                :page_size, :page_total and :items (an array of
     #                Notification objects)
     def history(options={})
-      param = { :uniq_id => self.uniq_id }.merge options
+      param = { :uniq_id => @uniq_id }.merge options
       Storm::Base::SODServer.remote_list '/Storm/Server/history', param do |i|
         notification = Notification.new
         notification.from_hash i
@@ -226,7 +229,7 @@ module Storm
     #  :force [Bool] whether forcing a hard reboot of the server
     # @return [String] a result message
     def reboot(options={})
-      param = { :uniq_id => self.uniq_id }.merge options
+      param = { :uniq_id => @uniq_id }.merge options
       param[:force] = param[:force] ? 1 : 0
       data = Storm::Base::SODServer.remote_call '/Storm/Server/reboot', param
       data[:rebooted]
@@ -239,8 +242,8 @@ module Storm
     #  :skip_fs_resize [Bool] whether skip filesystem resizing
     def resize(config, options={})
       param = {
-        :config_id => config.uniq_id,
-        :uniq_id => self.uniq_id
+        :config_id => config.id,
+        :uniq_id => @uniq_id
         }.merge options
       options[:skip_fs_resize] = options[:skip_fs_resize] ? 1 : 0
       data = Storm::Base::SODServer.remote_call '/Storm/Server/resize', param
@@ -253,7 +256,7 @@ module Storm
     #  :force [Bool] whether forcing a hard shutdown of the server
     # @return [String] a string identifier
     def shutdown(options={})
-      param = { :uniq_id => self.uniq_id }.merge options
+      param = { :uniq_id => @uniq_id }.merge options
       param[:force] = param[:force] ? 1 : 0
       data = Storm::Base::SODServer.remote_call '/Storm/Server/shutdown', param
       data[:shutdown]
@@ -264,7 +267,7 @@ module Storm
     # @return [String] a string identifier
     def start
       data = Storm::Base::SODServer.remote_call '/Storm/Server/start',
-                                                :uniq_id => self.uniq_id
+                                                :uniq_id => @uniq_id
       data[:started]
     end
 
@@ -273,7 +276,7 @@ module Storm
     # @return [Status] a Status object
     def status
       data = Storm::Base::SODServer.remote_call '/Storm/Server/status',
-                                                :uniq_id => self.uniq_id
+                                                :uniq_id => @uniq_id
       st = Status.new
       st.from_hash data
       st
@@ -288,7 +291,7 @@ module Storm
     #  :bandwidth_quota [Int],
     #  :domain [String] a fully-qualified domain name
     def update(options={})
-      param = { :uniq_id => self.uniq_id }.merge options
+      param = { :uniq_id => @uniq_id }.merge options
       param[:backup_enabled] = param[:backup_enabled] ? 1 : 0
       data = Storm::Base::SODServer.remote_call '/Storm/Server/update', param
       self.from_hash data

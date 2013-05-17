@@ -7,12 +7,12 @@ module Storm
   module Network
     class PrivateZone < Storm::Base::Model
       attr_accessor :attached
+      attr_accessor :id
       attr_accessor :name
       attr_accessor :region
       attr_accessor :unattached
 
       def from_hash(h)
-        super
         if h[:attached]
           @attached = h[:attached].map do |s|
             server = Storm::Server.new
@@ -20,6 +20,7 @@ module Storm
             server
           end
         end
+        @id = h[:id]
         @name = h[:name]
         @region = Storm::Network::ZoneRegion.new
         @region.from_hash h[:region]

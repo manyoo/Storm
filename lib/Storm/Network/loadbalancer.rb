@@ -1,6 +1,7 @@
 require "Storm/Base/model"
 require "Storm/Base/sodserver"
 require "Storm/server"
+require "Storm/Network/zone"
 
 module Storm
   module Network
@@ -47,9 +48,9 @@ module Storm
       attr_accessor :ssl_termination
       attr_accessor :strategy
       attr_accessor :vip
+      attr_accessor :uniq_id
 
       def from_hash(h)
-        super
         @capabilities = h[:capabilities]
         @name = h[:name]
         if h[:nodes]
@@ -60,7 +61,7 @@ module Storm
           end
         end
         @region = Storm::Network::ZoneRegion.new
-        @region.uniq_id = h[:region_id]
+        @region.id = h[:region_id]
         if h[:services]
           @services = h[:services].map do |s|
             service = Storm::Network::Service.new
@@ -73,6 +74,7 @@ module Storm
         @ssl_termination = h[:ssl_termination].to_i == 0 ? false : true
         @strategy = h[:strategy]
         @vip = h[:vip]
+        @uniq_id = h[:uniq_id]
       end
 
       # Add a single node to an existing loadbalancer
@@ -81,7 +83,7 @@ module Storm
       def add_node(node)
         data = Storm::Base::SODServer.remote_call \
                     '/Network/LoadBalancer/addNode',
-                    :uniq_id => self.uniq_id,
+                    :uniq_id => @uniq_id,
                     :node => node
         self.from_hash data
       end
@@ -93,7 +95,7 @@ module Storm
       def add_service(dest_port, src_port)
         data = Storm::Base::SODServer.remote_call \
                     '/Network/LoadBalancer/addService',
-                    :uniq_id => self.uniq_id,
+                    :uniq_id => @uniq_id,
                     :dest_port => dest_port,
                     :src_port => src_port
         self.from_hash data
@@ -145,14 +147,14 @@ module Storm
       # @return [String] a result message
       def delete
         data = Storm::Base::SODServer.remote_call \
-                    '/Network/LoadBalancer/delete', :uniq_id => self.uniq_id
+                    '/Network/LoadBalancer/delete', :uniq_id => @uniq_id
         data[:deleted]
       end
 
       # Get details information about the current LoadBalancer
       def details
         data = Storm::Base::SODServer.remote_call \
-                    '/Network/LoadBalancer/details', :uniq_id => self.uniq_id
+                    '/Network/LoadBalancer/details', :uniq_id => @uniq_id
         self.from_hash data
       end
 
@@ -197,7 +199,7 @@ module Storm
         data = Storm::Base::SODServer.remote_call \
                     '/Network/LoadBalancer/removeNode',
                     :node => node,
-                    :uniq_id => self.uniq_id
+                    :uniq_id => @uniq_id
         self.from_hash data
       end
 
@@ -208,7 +210,7 @@ module Storm
         data = Storm::Base::SODServer.remote_call \
                     '/Network/LoadBalancer/removeService',
                     :src_port => src_port,
-                    :uniq_id => self.uniq_id
+                    :uniq_id => @uniq_id
         self.from_hash data
       end
 
@@ -241,7 +243,7 @@ module Storm
       #  :ssl_termination [Bool]
       #  :strategy [String] strategy name
       def update(options={})
-        param = { :uniq_id => self.uniq_id }.merge options
+        param = { :uniq_id => @uniq_id }.merge options
         if param[:services]
           param[:services] = param[:services].map { |s| s.to_hash }
         end

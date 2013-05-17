@@ -17,6 +17,7 @@ module Storm
     attr_accessor :disk_total
     attr_accessor :disk_type
     attr_accessor :featured
+    attr_accessor :id
     attr_accessor :memory
     attr_accessor :raid_level
     attr_accessor :ram_available
@@ -25,7 +26,6 @@ module Storm
     attr_accessor :zone_availability
 
     def from_hash(h)
-      super
       @active = h[:active].to_i == 1 ? true : false
       @available = h[:available]
       @category = h[:category]
@@ -40,6 +40,7 @@ module Storm
       @disk_total = h[:disk_total]
       @disk_type = h[:disk_type]
       @featured = h[:featured].to_i == 1 ? true : false
+      @id = h[:id]
       @raid_level = h[:raid_level]
       @ram_available = h[:ram_available]
       @ram_total = h[:ram_total]
@@ -50,7 +51,7 @@ module Storm
     # Get information about a specific config
     def details
       data = Storm::Base::SODServer.remote_call '/Storm/Config/details',
-                                                :id => self.uniq_id
+                                                :id => @id
       self.from_hash data
     end
 

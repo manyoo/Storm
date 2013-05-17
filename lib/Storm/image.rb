@@ -6,6 +6,7 @@ module Storm
     attr_accessor :account
     attr_accessor :features
     attr_accessor :hv_type
+    attr_accessor :id
     attr_accessor :name
     attr_accessor :size
     attr_accessor :source_hostname
@@ -15,7 +16,7 @@ module Storm
     attr_accessor :time_taken
 
     def from_hash(h)
-      self.uniq_id = h[:id]
+      @id = h[:id]
       @account = h[:accnt]
       @features = h[:features]
       @hv_type = h[:hv_type]
@@ -46,14 +47,14 @@ module Storm
     # @return [Int] a positive integer value
     def delete
       data = Storm::Base::SODServer.remote_call '/Storm/Image/delete',
-                                                :id => self.uniq_id
+                                                :id => @id
       data[:deleted]
     end
 
     # Get information about a specific image
     def details
       data = Storm::Base::SODServer.remote_call '/Storm/Image/details',
-                                                :id => self.uniq_id
+                                                :id => @id
       self.from_hash data
     end
 
@@ -81,7 +82,7 @@ module Storm
     # @return [String] a string message
     def restore(server, options={})
       param = {
-        :id => self.uniq_id,
+        :id => @id,
         :uniq_id => server.uniq_id
         }.merge options
       param[:force] = param[:force] ? 1 : 0
@@ -95,7 +96,7 @@ module Storm
     # @param name [String] the new image name
     def update(name)
       data = Storm::Base::SODServer.remote_call '/Storm/Image/restore',
-                                                :id => self.uniq_id,
+                                                :id => @id,
                                                 :name => name
       self.from_hash data
     end

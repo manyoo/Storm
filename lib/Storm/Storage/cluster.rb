@@ -5,20 +5,22 @@ module Storm
   module Storage
     class Zone < Storm::Base::Model
       attr_accessor :name
+      attr_accessor :id
 
       def from_hash(h)
-        super
+        @id = h[:id]
         @name = h[:name]
       end
     end
 
     class Cluster < Storm::Base::Model
       attr_accessor :description
+      attr_accessor :id
       attr_accessor :zone
 
       def from_hash(h)
-        super
         @description = h[:description]
+        @id = h[:id]
         @zone = Zone.new
         @zone.from_hash h[:zone]
       end

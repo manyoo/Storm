@@ -11,28 +11,29 @@ module Storm
       attr_accessor :end_range
       attr_accessor :gateway
       attr_accessor :netmask
+      attr_accessor :id
       attr_accessor :zone
 
       def from_hash(h)
-        super
         @begin_range = h[:begin_range]
         @broadcast = h[:broadcast]
         @end_range = h[:end_range]
         @gateway = h[:gateway]
         @netmask = h[:netmask]
+        @id = h[:id]
         @zone = Storm::Network::Zone.new
-        @zone.uniq_id = h[:zone_id]
+        @zone.id = h[:zone_id]
       end
     end
 
     class Pool < Storm::Base::Model
       attr_accessor :account
       attr_accessor :assignments
-      attr_accessor :server
+      attr_accessor :id
+      attr_accessor :uniq_id
       attr_accessor :zone
 
       def from_hash(h)
-        self.uniq_id = h[:id]
         @account = h[:accnt]
         if h[:assignments]
           @assignments = h[:assignments].map do |as|
@@ -41,10 +42,10 @@ module Storm
             assign
           end
         end
-        @server = Storm::Server.new
-        @server.uniq_id = h[:uniq_id]
+        @id = h[:id]
+        @uniq_id = h[:uniq_id]
         @zone = Storm::Network::Zone.new
-        @zone.uniq_id = h[:zone_id]
+        @zone.id = h[:zone_id]
       end
 
       # Create a new IP Pool
@@ -60,7 +61,7 @@ module Storm
         param = {}
         param[:add_ips] = add_ips if add_ips
         param[:new_ips] = new_ips if new_ips
-        param[:zone_id] = zone.uniq_id
+        param[:zone_id] = zone.id
         data = Storm::Base::SODServer.remote_call '/Network/Pool/create', param
         pool = Pool.new
         pool.from_hash data
@@ -74,7 +75,7 @@ module Storm
       # @return [String] a result message
       def delete
         data = Storm::Base::SODServer.remote_call '/Network/Pool/delete',
-                                                  :uniq_id => self.uniq_id
+                                                  :uniq_id => @uniq_id
         data[:deleted]
       end
 
@@ -94,7 +95,8 @@ module Storm
       #  :free_only [Bool]
       def details(options={})
         param = {
-          :id => self.uniq_id,
+          :id => @id,
+          :uniq_id => @uniq_id,
           :free_only => false
         }.merge options
         param[:free_only] = param[:free_only] ? 1 : 0
@@ -115,7 +117,7 @@ module Storm
       #                Assignment objects)
       def self.list(options={})
         if options[:zone]
-          options[:zone_id] = options[:zone].uniq_id
+          options[:zone_id] = options[:zone].id
           options.delete :zond
         end
         Storm::Base::SODServer.remote_list '/Network/Pool/list', options do |i|
@@ -132,7 +134,7 @@ module Storm
       #  :remove_ips [Array] an array of IPs to remove
       #  :new_ips [Int] number of new IPs
       def update(options={})
-        param = { :id => self.uniq_id }.merge options
+        param = { :id => @id, :uniq_id => @uniq_id }.merge options
         data = Storm::Base::SODServer.remote_call '/Network/Pool/update', param
         self.from_hash data
       end

@@ -13,7 +13,6 @@ module Storm
     attr_accessor :values
 
     def from_hash(h)
-      super
       @automated = h[:automated].to_i == 0 ? false : true
       @display_order = h[:display_order]
       @display_text = h[:display_text]
@@ -35,7 +34,6 @@ module Storm
     attr_accessor :next_bill
 
     def from_hash(h)
-      super
       @approved = h[:approved].to_i == 0 ? false : true
       @balance = h[:balance]
       @cc_charge = h[:cc_charge]
@@ -62,7 +60,6 @@ module Storm
     attr_accessor :series
 
     def from_hash(h)
-      super
       @alias = h[:alias]
       @capabilities = h[:capabilities]
       @categories = h[:categories]

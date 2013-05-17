@@ -33,7 +33,7 @@ module Storm
         def self.create(rdata, record, region, region_id)
           param = {}
           param[:rdata] = rdata
-          param[:record_id] = record.uniq_id
+          param[:record_id] = record.id
           param[:region] = region if region
           param[:region_id] = region_id if region_id
           data = Storm::Base::SODServer.remote_call \
@@ -49,7 +49,7 @@ module Storm
         # @return [Hash] a hash with keys: :accnt, :record_id, :region_id
         def self.delete(record, region, region_id)
           param = {}
-          param[:record_id] = record.uniq_id
+          param[:record_id] = record.id
           param[:region] = region if region
           param[:region_id] = region_id if region_id
           Storm::Base::SODServer.remote_call \
@@ -65,7 +65,7 @@ module Storm
         def self.update(rdata, record, region, region_id)
           param = {}
           param[:rdata] = rdata
-          param[:record_id] = record.uniq_id
+          param[:record_id] = record.id
           param[:region] = region if region
           param[:region_id] = region_id if region_id
           data = Storm::Base::SODServer.remote_call \
@@ -78,6 +78,7 @@ module Storm
         attr_accessor :admin_email
         attr_accessor :expiry
         attr_accessor :full_data
+        attr_accessor :id
         attr_accessor :minimum
         attr_accessor :name
         attr_accessor :nameserver
@@ -95,10 +96,10 @@ module Storm
         attr_accessor :zone
 
         def from_hash(h)
-          super
           @admin_email = h[:adminEmail]
           @expiry = h[:expiry]
           @full_data = h[:fullData]
+          @id = h[:id]
           @minimum = h[:minimum]
           @name = h[:name]
           @nameserver = h[:nameserver]
@@ -120,7 +121,7 @@ module Storm
           @type = h[:type]
           @weight = h[:weight]
           @zone = Storm::Network::DNS::Zone.new
-          @zone.uniq_id = h[:zone_id]
+          @zone.id = h[:zone_id]
         end
 
         # Create a new resource recrod to a zone file
@@ -141,7 +142,7 @@ module Storm
             :rdata => rdata,
             :region_overrides => region_overrides.map { |i| i.to_hash },
             :type => type,
-            :zone_id => zone.uniq_id
+            :zone_id => zone.id
           }.merge options
           data = Storm::Base::SODServer.remote_call \
                       '/Network/DNS/Record/create', param
@@ -155,14 +156,14 @@ module Storm
         # @return [Int] the deleted record id
         def delete
           data = Storm::Base::SODServer.remote_call \
-                      '/Network/DNS/Record/delete', :id => self.uniq_id
+                      '/Network/DNS/Record/delete', :id => @id
           data[:deleted]
         end
 
         # Get details information of the current record
         def details
           data = Storm::Base::SODServer.remote_call \
-                      '/Network/DNS/Record/details', :id => self.uniq_id
+                      '/Network/DNS/Record/details', :id => @id
           self.from_hash data
         end
 
@@ -176,7 +177,7 @@ module Storm
         #                :page_size, :page_total and :items (an array of
         #                Record objects)
         def self.list(zone, options)
-          param = { :uniq_id => zone.uniq_id }.merge options
+          param = { :zone_id => zone.id }.merge options
           Storm::Base::SODServer.remote_list '/Network/DNS/Record/list',
                                              param do |r|
                                               record = Record.new
@@ -193,7 +194,7 @@ module Storm
         # :ttl [Int]
         # either :rdata or :ttl must be provided
         def update(options={})
-          param = { :id => self.uniq_id }.merge options
+          param = { :id => @id }.merge options
           data = Storm::Base::SODServer.remote_call \
                       '/Network/DNS/Record/update', param
           self.from_hash data

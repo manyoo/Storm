@@ -6,14 +6,15 @@ module Storm
     class IPNetwork < Storm::Base::Model
       attr_accessor :broadcast
       attr_accessor :gateway
+      attr_accessor :id
       attr_accessor :ip
       attr_accessor :netmask
       attr_accessor :reverse_dns
 
       def from_hash(h)
-        super
         @broadcast = h[:broadcast]
         @gateway = h[:gateway]
+        @id = h[:id]
         @ip = h[:ip]
         @netmask = h[:netmask]
         @reverse_dns = h[:reverse_dns]
@@ -83,6 +84,10 @@ module Storm
       #                IPNetwork objects)
       def self.list_account_public(options={})
         options[:include_pools] = options[:include_pools] ? 1 : 0
+        if options[:zone]
+          options[:zone_id] = options[:zone].id
+          options.delete :zone
+        end
         Storm::Base::SODServer.remote_list \
                     '/Network/IP/listAccntPublic', options do |i|
           ipnet = IPNetwork.new
@@ -121,7 +126,7 @@ module Storm
       # @return [String] a result meessage
       def self.remove(server, ip, options={})
         param = {
-          :uniq_id => self.uniq_id,
+          :uniq_id => server.uniq_id,
           :ip => ip
         }.merge options
         options[:reboot] = options[:reboot] ? 1 : 0

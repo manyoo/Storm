@@ -10,10 +10,10 @@ module Storm
     attr_accessor :max_users
     attr_accessor :network_range
     attr_accessor :region_id
+    attr_accessor :uniq_id
     attr_accessor :vpn
 
     def from_hash(h)
-      super
       @active = h[:active].to_i == 0 ? false : true
       @active_status = h[:active_status]
       @current_users = h[:current_users]
@@ -21,6 +21,7 @@ module Storm
       @max_users = h[:max_users]
       @network_range = h[:network_range]
       @region_id = h[:region_id]
+      @uniq_id = h[:uniq_id]
       if h[:vpn]
         @vpn = VPN.new
         @vpn.from_hash h[:vpn]
@@ -49,7 +50,7 @@ module Storm
     # Get details information
     def details
       data = Storm::Base::SODServer.remote_call '/VPN/details',
-                                                :uniq_id => self.uniq_id
+                                                :uniq_id => @uniq_id
       self.from_hash data
     end
 
@@ -62,7 +63,7 @@ module Storm
     #                :page_size, :page_total and :items (an array of
     #                VPNUser objects)
     def list(options={})
-      param = { :uniq_id => self.uniq_id }.merge options
+      param = { :uniq_id => @uniq_id }.merge options
       Storm::Base::SODServer.remote_list '/VPN/list', param do |u|
         user = VPNUser.new
         user.from_hash u
@@ -76,7 +77,7 @@ module Storm
     #  :domain [String]
     #  :features [Hash]
     def update(options={})
-      param = { :uniq_id => self.uniq_id }.merge options
+      param = { :uniq_id => @uniq_id }.merge options
       data = Storm::Base::SODServer.remote_call '/VPN/update', param
       self.from_hash data
     end

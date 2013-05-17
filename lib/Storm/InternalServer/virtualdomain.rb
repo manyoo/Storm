@@ -12,10 +12,10 @@ module Storm
       attr_accessor :managed
       attr_accessor :region_id
       attr_accessor :server
+      attr_accessor :uniq_id
       attr_accessor :username
 
       def from_hash(h)
-        super
         @active = h[:active]
         @active_status = h[:activeStatus]
         @custom = h[:custom]
@@ -24,6 +24,7 @@ module Storm
         @managed = h[:managed]
         @region_id = h[:region_id]
         @server = h[:server]
+        @uniq_id = h[:uniq_id]
         @username = h[:username]
       end
 

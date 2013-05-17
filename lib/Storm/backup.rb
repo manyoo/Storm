@@ -6,20 +6,23 @@ module Storm
     attr_accessor :account
     attr_accessor :features
     attr_accessor :hv_type
+    attr_accessor :id
     attr_accessor :name
     attr_accessor :size
     attr_accessor :template
     attr_accessor :time_taken
+    attr_accessor :uniq_id
 
     def from_hash(h)
-      self.uniq_id = h[:id]
       @account = h[:accnt]
       @features = h[:features]
       @hv_type = h[:hv_type]
+      @id = h[:id]
       @name = h[:name]
       @size = h[:size]
       @template = h[:template]
       @time_taken = self.get_datetime h, :time_taken
+      @uniq_id = h[:uniq_id]
     end
 
     # Get information about a specific backup
@@ -27,10 +30,10 @@ module Storm
     # @param options [Hash] optional keys:
     #  :server [Server] an existing server object
     def details(options={})
-      param = { :id => self.uniq_id }.merge options
+      param = { :id => @id }.merge options
       if param[:server]
         param[:uniq_id] = param[:server].uniq_id
-        param.delete :uniq_id
+        param.delete :server
       end
       data = Storm::Base::SODServer.remote_call '/Storm/Backup/details', param
       self.from_hash data
@@ -65,7 +68,7 @@ module Storm
     # @return [String] a string identifier
     def restore(server, options={})
       param = {
-        :id => self.uniq_id,
+        :id => @id,
         :uniq_id => server.uniq_id
         }.merge options
       param[:force] = param[:force] ? 1 : 0

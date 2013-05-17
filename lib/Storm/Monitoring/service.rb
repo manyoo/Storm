@@ -8,13 +8,14 @@ module Storm
       attr_accessor :enabled
       attr_accessor :services
       attr_accessor :unmonitored
+      attr_accessor :uniq_id
 
       def from_hash(h)
-        super
         @can_monitor = h[:can_monitor]
         @enabled = h[:enabled].to_i == 1 ? true : false
         @services = h[:services]
         @unmonitored = h[:unmonitored].to_i == 1 ? true : false
+        @uniq_id = h[:uniq_id]
       end
 
       # Get the current monitoring settings for a server

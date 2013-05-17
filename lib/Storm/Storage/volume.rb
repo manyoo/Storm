@@ -10,16 +10,17 @@ module Storm
       attr_accessor :label
       attr_accessor :size
       attr_accessor :status
+      attr_accessor :uniq_id
       attr_accessor :zone
 
       def from_hash(h)
-        super
         @attached_to = h[:attachedTo]
         @cross_attach = h[:cross_attach].to_i == 0 ? false : true
         @domain = h[:domain]
         @label = h[:label]
         @size = h[:size]
         @status = h[:status]
+        @uniq_id = h[:uniq_id]
         @zone = h[:zone]
       end
 
@@ -31,7 +32,7 @@ module Storm
       def attach(server)
         Storm::Base::SODServer.remote_call '/Storage/Block/Volume/attach',
                                            :to => server.uniq_id,
-                                           :uniq_id => self.uniq_id
+                                           :uniq_id => @uniq_id
       end
 
       # Create a new volume
@@ -49,7 +50,7 @@ module Storm
           :size => size
           }.merge options
         param[:cross_attach] = param[:cross_attach] ? 1 : 0
-        param[:zone] = param[:zone].uniq_id if param[:zone]
+        param[:zone] = param[:zone].id if param[:zone]
         data = Storm::Base::SODServer.remote_call \
                     '/Storage/Block/Volume/create', param
         vol = Volume.new
@@ -63,7 +64,7 @@ module Storm
       # @return [String] a result message
       def delete
         data = Storm::Base::SODServer.remote_call \
-                    '/Storage/Block/Volume/delete', :uniq_id => self.uniq_id
+                    '/Storage/Block/Volume/delete', :uniq_id => @uniq_id
         data[:deleted]
       end
 
@@ -73,7 +74,7 @@ module Storm
       #  :server [Server] a server object
       # @return [Hash] a hash with keys :detached and :detached_from
       def detach(options={})
-        param = { :uniq_id => self.uniq_id }.merge options
+        param = { :uniq_id => @uniq_id }.merge options
         if param[:server]
           param[:detach_from] = param[:server].uniq_id
           param.delete :server
@@ -85,7 +86,7 @@ module Storm
       # Retrieve information about a specific volume
       def details
         data = Storm::Base::SODServer.remote_call \
-                      '/Storage/Block/Volume/details', :uniq_id => self.uniq_id
+                      '/Storage/Block/Volume/details', :uniq_id => @uniq_id
         self.from_hash data
       end
 
@@ -117,7 +118,7 @@ module Storm
       def resize(size)
         Storm::Base::SODServer.remote_call '/Storage/Block/Volume/resize',
                                            :new_size => size,
-                                           :uniq_id => self.uniq_id
+                                           :uniq_id => @uniq_id
       end
 
       # Update an existing volume.  Currently, only renaming the volume is
@@ -127,7 +128,7 @@ module Storm
       #  :domain [String] domain name
       #  :cross_attach [Bool] if enabling cross_attach
       def update(options={})
-        param = { :uniq_id => self.uniq_id }.merge options
+        param = { :uniq_id => @uniq_id }.merge options
         param[:cross_attach] = param[:cross_attach] ? 1 : 0
         data = Storm::Base::SODServer.remote_call \
                       '/Storage/Block/Volume/update', param

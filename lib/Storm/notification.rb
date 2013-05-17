@@ -17,6 +17,7 @@ module Storm
     attr_accessor :category
     attr_accessor :description
     attr_accessor :enddate
+    attr_accessor :id
     attr_accessor :last_alert
     attr_accessor :modifieddate
     attr_accessor :resolved
@@ -26,7 +27,7 @@ module Storm
     attr_accessor :system_identifier
 
     def from_hash(h)
-      self.uniq_id = h[:id]
+      @id = h[:id]
       if h[:alerts]
         @alerts = h[:alerts].map do |a|
           alert = Alert.new
@@ -77,14 +78,12 @@ module Storm
     #  :category [String] category name
     #  :page_num [Int] page number
     #  :page_size [Int] page size
-    #  :resolved [Bool] if the Notification is resolved
     #  :system [String] system name
     #  :server [Server] a server object
     # @return [Hash] a hash with keys: :item_count, :item_total, :page_num,
     #                :page_size, :page_total and :items (an array of
     #                Notification objects)
     def self.current(options={})
-      options[:resolved] = options[:resolved] ? 1 : 0
       if options[:server]
         options[:uniq_id] = options[:server].uniq_id
         options.delete :server
@@ -116,7 +115,7 @@ module Storm
     # @param options [Hash] optional keys:
     #  :limit [Int]
     def details(options={})
-      param = { :id => self.uniq_id }.merge options
+      param = { :id => @id }.merge options
       data = Storm::Base::SODServer.remote_call '/Notifications/details',
                                                 param
       self.from_hash data
@@ -139,7 +138,7 @@ module Storm
     # Resolve the current notification
     def resolve
       data = Storm::Base::SODServer.remote_call '/Notifications/resolve',
-                                                :id => self.uniq_id
+                                                :id => @id
       self.from_hash data
     end
   end

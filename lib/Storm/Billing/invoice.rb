@@ -8,6 +8,7 @@ module Storm
       attr_accessor :bill_date
       attr_accessor :due
       attr_accessor :end_date
+      attr_accessor :id
       attr_accessor :lineitem_groups
       attr_accessor :payments
       attr_accessor :start_date
@@ -16,11 +17,11 @@ module Storm
       attr_accessor :type
 
       def from_hash(h)
-        super
         @account = h[:accnt]
         @bill_date = self.get_datetime h, :bill_date
         @due = h[:due]
         @end_date = self.get_datetime h, :end_date
+        @id = h[:id]
         if h[:lineitem_groups]
           @lineitem_groups = h[:lineitem_groups].map do |group|
             bg = BillGroup.new
@@ -45,9 +46,9 @@ module Storm
       # in the list method, additional details about the specific lineitems
       # are included in this method.
       def details
-        raise 'uniq_id is not set for the current object' unless self.uniq_id
+        raise 'id is not set for the current object' unless self.id
         data = Storm::Base::SODServer.remote_call '/Billing/Invoice/details',
-                                                  :id => self.uniq_id
+                                                  :id => self.id
         self.from_hash data
       end
 
@@ -94,7 +95,6 @@ module Storm
       attr_accessor :start_date
 
       def from_hash(h)
-        super
         @charged_amount = h[:charged_amount]
         @end_date = self.get_datetime h, :end_date
         @description = h[:item_description]
@@ -112,7 +112,6 @@ module Storm
       attr_accessor :subtotal
 
       def from_hash(h)
-        super
         @description = h[:description]
         @end_date = self.get_date h, :end_date
         @line_items = self.get_array do |l|
@@ -133,7 +132,6 @@ module Storm
       attr_accessor :type
 
       def from_hash(h)
-        super
         @account = h[:account]
         @amount = h[:amount]
         @paid_date = self.get_datetime h, :paid_date

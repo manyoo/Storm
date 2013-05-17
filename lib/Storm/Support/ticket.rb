@@ -39,6 +39,7 @@ module Storm
       attr_accessor :close_date
       attr_accessor :comment
       attr_accessor :create_date
+      attr_accessor :id
       attr_accessor :memo
       attr_accessor :rating
       attr_accessor :status
@@ -46,11 +47,11 @@ module Storm
       attr_accessor :ttime
 
       def from_hash(h)
-        super
         @attributes = h[:attributes]
         @close_date = self.get_datetime h, :close_date
         @comment = h[:comment]
         @create_date = self.get_datetime h, :create_date
+        @id = h[:id]
         @memo = h[:memo]
         @rating = h[:rating]
         @status = h[:status]
@@ -71,6 +72,7 @@ module Storm
       attr_accessor :feedback
       attr_accessor :handler
       attr_accessor :haswarned
+      attr_accessor :id
       attr_accessor :lastresponse
       attr_accessor :opened
       attr_accessor :secid
@@ -81,7 +83,6 @@ module Storm
 
 
       def from_hash(h)
-        super
         @account = h[:accnt]
         @authenticated = h[:authenticated].to_i == 0 ? false : true
         @brand = h[:brand]
@@ -95,6 +96,7 @@ module Storm
           @feedback.from_hash h[:feedback]
         end
         @handler = h[:handler]
+        @id = h[:id]
         @haswarned = h[:haswarned].to_i == 0 ? false : true
         @lastresponse = self.get_datetime h, :lastresponse
         @opened = self.get_datetime h, :opened
@@ -122,7 +124,7 @@ module Storm
         param[:comments] = comments
         param[:future] = future
         param[:rating] = rating
-        param[:id] = self.uniq_id
+        param[:id] = @id
         param[:secid] = @secid
         data = Storm::Base::SODServer.remote_call \
                     '/Support/Ticket/addFeedback', param
@@ -144,7 +146,7 @@ module Storm
           :time => time,
           :rating => rating,
           :secid => @secid,
-          :ticket_id => self.uniq_id
+          :ticket_id => @id
         }.merge options
         data = Storm::Base::SODServer.remote_call \
                     '/Support/Ticket/addTransactionFeedback', param
@@ -161,7 +163,7 @@ module Storm
       # @return [Bool] if it's authenticated
       def authenticate(username, password)
         param = {}
-        param[:id] = self.uniq_id
+        param[:id] = @id
         param[:secid] = @secid
         param[:username] = username
         param[:password] = password
@@ -175,7 +177,7 @@ module Storm
       # @return [Bool]
       def close
         data = Storm::Base::SODServer.remote_call \
-                    '/Support/Ticket/close', :id => self.uniq_id,
+                    '/Support/Ticket/close', :id => @id,
                     :secid => @secid
         data[:closed].to_i == 0 ? false : true
       end
@@ -198,7 +200,7 @@ module Storm
       # Get details information of a ticket
       def details
         data = Storm::Base::SODServer.remote_call '/Support/Ticket/details',
-                                                  :id => self.uniq_id,
+                                                  :id => @id,
                                                   :secid => @secid
         self.from_hash data
       end
@@ -226,7 +228,7 @@ module Storm
       # @return [Bool] if it's reopened
       def reopen
         data = Storm::Base::SODServer.remote_call '/Support/Ticket/reopen',
-                                                  :id => self.uniq_id,
+                                                  :id => @id,
                                                   :secid => @secid
         data[:reopened].to_i == 0 ? false : true
       end
@@ -244,7 +246,7 @@ module Storm
           :from => from,
           :subject => subject,
           :body => body,
-          :id => self.uniq_id,
+          :id => @id,
           :secid => @secid
           }.merge options
         param[:wrap] = param[:wrap] ? 1 : 0

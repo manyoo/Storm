@@ -31,6 +31,7 @@ module Storm
         attr_accessor :active
         attr_accessor :delegation_checked
         attr_accessor :delegation_status
+        attr_accessor :id
         attr_accessor :master
         attr_accessor :name
         attr_accessor :notified_serial
@@ -39,10 +40,10 @@ module Storm
         attr_accessor :type
 
         def from_hash(h)
-          super
           @active = h[:active] == 0 ? false : true
           @delegation_checked = self.get_datetime h, :delegation_checked
           @delegation_status = h[:delegation_status]
+          @id = h[:id]
           @master = h[:master]
           @name = h[:name]
           @notified_serial = h[:notified_serial]
@@ -76,7 +77,7 @@ module Storm
         # @return [String] result message
         def delegation
           data = Storm::Base::SODServer.remote_call \
-                      '/Network/DNS/Zone/delegation', :id => self.uniq_id
+                      '/Network/DNS/Zone/delegation', :id => @id
           data[:delegation]
         end
 
@@ -85,14 +86,14 @@ module Storm
         # @return [String] a domain name
         def delete
           data = Storm::Base::SODServer.remote_call \
-                      '/Network/DNS/Zone/delete', :id => self.uniq_id
+                      '/Network/DNS/Zone/delete', :id => @id
           data[:deleted]
         end
 
         # Get details information on a particular Zone
         def details
           data = Storm::Base::SODServer.remote_call \
-                      '/Network/DNS/Zone/details', :id => self.uniq_id
+                      '/Network/DNS/Zone/details', :id => @id
           self.from_hash data
         end
 
@@ -118,7 +119,7 @@ module Storm
         # @param options [Hash] optional keys:
         #  :DNSRegionSupport [Bool]
         def update(options={})
-          param = { :id => self.uniq_id }.merge options
+          param = { :id => @id }.merge options
           param[:DNSRegionSupport] = param[:DNSRegionSupport] ? 1 : 0
           data = Storm::Base::SODServer.remote_call '/Network/DNS/Zone/update',
                                                     param

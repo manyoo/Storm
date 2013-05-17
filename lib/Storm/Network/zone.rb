@@ -4,10 +4,11 @@ require "Storm/Base/sodserver"
 module Storm
   module Network
     class ZoneRegion < Storm::Base::Model
+      attr_accessor :id
       attr_accessor :name
 
       def from_hash(h)
-        super
+        @id = h[:id]
         @name = h[:name]
       end
     end
@@ -23,6 +24,7 @@ module Storm
     end
 
     class Zone < Storm::Base::Model
+      attr_accessor :id
       attr_accessor :is_default
       attr_accessor :name
       attr_accessor :region
@@ -30,7 +32,7 @@ module Storm
       attr_accessor :valid_source_hvs
 
       def from_hash(h)
-        super
+        @id = h[:id]
         @is_default = h[:is_default].to_i == 1 ? true : false
         @name = h[:name]
         @region = ZoneRegion.new
@@ -43,7 +45,7 @@ module Storm
       # Get details of a the current zone
       def details
         data = Storm::Base::SODServer.remote_call '/Network/Zone/details',
-                                                  :id => self.uniq_id
+                                                  :id => @id
         self.from_hash data
       end
 
@@ -67,7 +69,7 @@ module Storm
       # Set the current zone as the default
       def set_default
         Storm::Base::SODServer.remote_call '/Network/Zone/setDefault',
-                                           :id => self.uniq_id
+                                           :id => @id
       end
     end
   end

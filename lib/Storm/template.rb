@@ -5,15 +5,16 @@ module Storm
   class Template < Storm::Base::Model
     attr_accessor :deprecated
     attr_accessor :description
+    attr_accessor :id
     attr_accessor :manage_level
     attr_accessor :name
     attr_accessor :os
     attr_accessor :zone_availability
 
     def from_hash(h)
-      super
       @deprecated = h[:deprecated].to_i == 0 ? false : true
       @description = h[:description]
+      @id = h[:id]
       @manage_level = h[:manage_level]
       @name = h[:name]
       @os = h[:os]
@@ -35,7 +36,7 @@ module Storm
     # Get information about the current template
     def details
       data = Storm::Base::SODServer.remote_call '/Storm/Template/details',
-                                                :id => self.uniq_id
+                                                :id => @id
       self.from_hash data
     end
 
@@ -83,7 +84,7 @@ module Storm
     # @return [String] a result message
     def restore(server, options={})
       param = {
-        :id => self.uniq_id,
+        :id => @id,
         :uniq_id => server.uniq_id
         }.merge options
       param[:force] = param[:force] ? 1 : 0

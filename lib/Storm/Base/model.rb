@@ -3,13 +3,11 @@ require 'date'
 module Storm
   module Base
     class Model
-      attr_accessor :uniq_id
 
       # Build up the object with data in a hash
       #
       # @param h [Hash] the hash data
       def from_hash(h)
-        @uniq_id = h[:uniq_id] || h[:id]
       end
 
       # Get a DateTime object in YYYY-MM-DD HH:MM:SS format from the hash
