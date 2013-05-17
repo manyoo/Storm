@@ -114,10 +114,12 @@ module Storm
       def from_hash(h)
         @description = h[:description]
         @end_date = self.get_date h, :end_date
-        @line_items = self.get_array do |l|
-          item = BillItem.new
-          item.from_hash l
-          item
+        if h[:line_items]
+          @line_items = h[:line_items].map do |l|
+            item = BillItem.new
+            item.from_hash l
+            item
+          end
         end
         @overdue = h[:overdue]
         @start_date = self.get_date h, :start_date
