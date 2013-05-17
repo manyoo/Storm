@@ -37,10 +37,14 @@ module Storm
         @is_default = h[:is_default].to_i == 1 ? true : false
         @name = h[:name]
         @region = ZoneRegion.new
-        @region.from_hash h[:region]
+        if h[:region]
+          @region.from_hash h[:region]
+        end
         @status = h[:status]
         @valid_source_hvs = ZoneHVS.new
-        @valid_source_hvs.from_hash h[:valid_source_hvs]
+        if h[:valid_source_hvs]
+          @valid_source_hvs.from_hash h[:valid_source_hvs]
+        end
       end
 
       # Get details of a the current zone

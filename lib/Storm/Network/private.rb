@@ -23,8 +23,10 @@ module Storm
         end
         @id = h[:id]
         @name = h[:name]
-        @region = Storm::Network::ZoneRegion.new
-        @region.from_hash h[:region]
+        if h[:region]
+          @region = Storm::Network::ZoneRegion.new
+          @region.from_hash h[:region]
+        end
         if h[:unattached]
           @unattached = h[:unattached].map do |s|
             server = Storm::Server.new

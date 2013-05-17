@@ -81,8 +81,10 @@ module Storm
       @template_description = h[:template_description]
       @type = h[:type]
       @uniq_id = h[:uniq_id]
-      @zone = Storm::Network::Zone.new
-      @zone.from_hash h[:zone]
+      if h[:zone]
+        @zone = Storm::Network::Zone.new
+        @zone.from_hash h[:zone]
+      end
     end
 
     # Clone a server
@@ -92,7 +94,7 @@ module Storm
     # @param options [Hash] optional keys:
     #   :config [Config] a config object,
     #   :ip_count [Int],
-    #   :zone [ServerZone]
+    #   :zone [Zone]
     # @return [Server] a new Server object
     def clone(domain, password, options={})
       param = {
@@ -129,7 +131,7 @@ module Storm
     #  :ms_sql [String],
     #  :public_ssh_key [String],
     #  :template [Template] a Template object,
-    #  :zone [ServerZone] a ServerZone object
+    #  :zone [Zone] a Zone object
     # @return [Server] a new Server object
     def self.create(config, domain, password, options={})
       param = {

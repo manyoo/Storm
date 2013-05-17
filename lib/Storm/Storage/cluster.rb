@@ -14,7 +14,9 @@ module Storm
         @description = h[:description]
         @id = h[:id]
         @zone = Storm::Network::Zone.new
-        @zone.from_hash h[:zone]
+        if h[:zone]
+          @zone.from_hash h[:zone]
+        end
       end
 
       # Get a paginated list of block storage clusters, including the zone that

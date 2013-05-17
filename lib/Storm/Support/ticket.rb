@@ -20,8 +20,10 @@ module Storm
       def from_hash(h)
         @body = h[:body]
         @email_address = h[:email_address]
-        @feedback = Feedback.new
-        @feedback.from_hash h[:feedback]
+        if h[:feedback]
+          @feedback = Feedback.new
+          @feedback.from_hash h[:feedback]
+        end
         @full_address = h[:full_address]
         @old_ticket_id = h[:old_ticket_id]
         @remote_ip = h[:remote_ip]
