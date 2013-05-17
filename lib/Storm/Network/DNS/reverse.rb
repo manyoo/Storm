@@ -10,7 +10,7 @@ module Storm
         # @param options [Hash] optional keys:
         #  :hostname [String]
         # @return [String] the deleted IP address
-        def self.delete(ip, options)
+        def self.delete(ip, options={})
           param = { :ip => ip }.merge options
           data = Storm::Base::SODServer.remote_call \
                       '/Network/DNS/Reverse/delete', param

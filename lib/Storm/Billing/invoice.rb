@@ -66,7 +66,7 @@ module Storm
         params = {
           :page_num => 1,
           :page_size => 10
-        }.merge(options)
+        }.merge options
         Storm::Base::SODServer.remote_list '/Billing/Invoice/list',
                                     :page_num => params[:page_num],
                                     :page_size => params[:page_size] do |i|
@@ -150,7 +150,7 @@ module Storm
       #       :card_code [String] The cvv code of a credit card, consisting of
       #           a number at least 3 digits and up to 4 digits in length]
       # @return [Int] A positive monetary value
-      def self.make(amount, options)
+      def self.make(amount, options={})
         raise 'amount should be positive' unless amount > 0
         param = { :amount => amount }.merge options
         data = Storm::Base::SODServer.remote_call '/Billing/Payment/make',
